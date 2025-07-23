@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from django.shortcuts import render, redirect
 import requests
 
@@ -121,58 +120,3 @@ def diet_result_view(request, plan_id):
     return render(request, 'diet-result.html', {
         'diet_plan': plan
     })
-=======
-# views.py
-from django.shortcuts import render,redirect
-from .forms import DietPreferenceForm
-import requests
-import json
-
-def diet_preference_view(request):
-    allergies_list = ['Nuts', 'Gluten', 'Dairy', 'Soy', 'Eggs', 'Shellfish', 'None']
-    diet_plan = None
-    form = DietPreferenceForm(request.POST)
-    # if request.method == 'POST':
-    #     form = DietPreferenceForm(request.POST)
-    #     if form.is_valid():
-    #         cleaned_data = form.cleaned_data
-
-    #         # Fix: allergies field comes as list, ensure it's JSON serializable
-    #         if "allergies" not in cleaned_data or cleaned_data["allergies"] is None:
-    #             cleaned_data["allergies"] = []
-
-    #         try:
-    #             response = requests.post(
-    #                 "http://127.0.0.1:8000/generate-diet-plan",
-    #                 json=cleaned_data
-    #             )
-    #             if response.status_code == 200:
-    #                 diet_plan = response.json().get("diet_plan")
-    #                  # ✅ Store diet_plan in session and redirect
-    #                 request.session['diet_plan'] = json.dumps(diet_plan)
-    #                 return redirect('dietPlan:diet_result')
-    #                   # 🔁 redirect instead of rendering on same page
-    #             else:
-    #                 form.add_error(None, "Error getting diet plan from API.")
-    #         except Exception as e:
-    #             form.add_error(None, f"Error connecting to backend: {e}")
-
-    # else:
-    #     form = DietPreferenceForm()
-
-    return render(request, 'diet-form.html', {'form': form,'allergies_list':allergies_list})
-
-
-#  NEW VIEW:
-# def diet_result_view(request):
-#     diet_plan_json = request.session.get('diet_plan')
-#     if not diet_plan_json:
-#         return redirect('diet-form')  # ⛔ if someone directly visits the result page
-
-#     diet_plan = json.loads(diet_plan_json)
-#     return render(request, 'diet-result.html', {'diet_plan': diet_plan})
-
-
-def dietResult(request):
-    return render(request,'diet-result.html')
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
