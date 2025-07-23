@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto p-4">
+  <h2 class="text-xl font-bold mb-4">Your Workout Plans</h2>
+  <a href="{% url 'create-workout' %}" class="bg-green-500 text-white px-4 py-2 rounded">+ New Plan</a>
+  <div class="mt-4">
+    {% for plan in plans %}
+    <div class="p-4 border rounded mb-2">
+      <p><strong>Goal:</strong> {{ plan.goal }}</p>
+      <p><strong>Days/Week:</strong> {{ plan.workout_days_per_week }}</p>
+      <p><strong>Duration:</strong> {{ plan.workout_duration }}</p>
+      <a href="{% url 'workout-plan' plan.id %}" class="text-blue-500">View</a> |
+      <!-- <form method="POST" action="{% url 'delete_workout_plan' plan.id %}" style="display:inline;"> -->
+        {% csrf_token %}
+        <button class="text-red-500" onclick="return confirm('Are you sure?')">Delete</button>
+      </form>
+    </div>
+    {% empty %}
+    <p>No workout plans found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
