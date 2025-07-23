@@ -4,42 +4,19 @@
 {% block title %}Create Your Fitness Plan{% endblock %}
 
 {% block extra_head %}
-<<<<<<< HEAD
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="{% static 'workout/css/create-workout.css' %}">
-  <link rel="stylesheet" href="{% static 'workout/css/custom.css' %}">
-
-  <!-- Custom JS -->
-=======
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="{% static 'workout/css/create-workout.css' %}">
   <link rel="stylesheet" href="{% static 'workout/css/custom.css' %}">
 
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
   <script src="{% static 'workout/js/create-workout.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
-<<<<<<< HEAD
-  <div
-    class="bg-black text-white flex items-center justify-center min-h-screen p-4"
-  >
-    <div
-      class="w-full max-w-3xl bg-gray-900 rounded-2xl shadow-2xl p-8 space-y-8"
-    >
-      <!-- Header -->
-      <div class="text-center">
-        <h1 class="text-3xl font-bold text-neon-400
-=======
   <div class="bg-black text-white flex items-center justify-center min-h-screen p-4">
     <div class="w-full max-w-3xl bg-gray-900 rounded-2xl shadow-2xl p-8 space-y-8">
       <div class="text-center">
         <h1 class="text-3xl font-bold text-neon-400">
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
           Create Your Fitness Plan
         </h1>
         <p class="text-gray-400 mt-2">
@@ -47,10 +24,6 @@
         </p>
       </div>
 
-<<<<<<< HEAD
-      <!-- Progress Bar -->
-=======
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
       <div class="w-full">
         <div class="flex items-center justify-between mb-2">
           <div id="progress-text" class="text-sm font-medium text-gray-300">
@@ -66,15 +39,8 @@
         </div>
       </div>
 
-<<<<<<< HEAD
-      <!-- Form -->
-      <form id="gymForm" class="relative overflow-hidden">
-        {% csrf_token %}
-        <!-- Step 1: Personal Details -->
-=======
       <form id="fitnessPlanForm" method="POST" action="{% url 'create_workout_plan' %}">
         {% csrf_token %}
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
         <div id="step-1" class="form-step active">
           <h2 class="text-2xl font-semibold mb-6 text-center">About You</h2>
           <div class="grid md:grid-cols-2 gap-6">
@@ -91,11 +57,7 @@
                 name="age"
                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 input-focus-neon"
                 placeholder="e.g., 25"
-<<<<<<< HEAD
-                required=""
-=======
                 required
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
               />
             </div>
             <div>
@@ -108,11 +70,7 @@
                   id="male"
                   name="gender"
                   value="male"
-<<<<<<< HEAD
-                  checked=""
-=======
                   checked
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
                 />
                 <label
                   for="male"
@@ -146,15 +104,9 @@
                 id="height_cm"
                 min="0"
                 name="height_cm"
-<<<<<<< HEAD
-                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 input-focus-neon"
-                placeholder="e.g., 180"
-                required=""
-=======
                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 input-focus-neon"
                 placeholder="e.g., 180"
                 required
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
               />
             </div>
             <div>
@@ -168,24 +120,14 @@
                 id="weight_kg"
                 min="0"
                 name="weight_kg"
-<<<<<<< HEAD
-                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 input-focus-neon"
-                placeholder="e.g., 75"
-                required=""
-=======
                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 input-focus-neon"
                 placeholder="e.g., 75"
                 required
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
               />
             </div>
           </div>
         </div>
 
-<<<<<<< HEAD
-        <!-- Step 2: Activity Level & Goals -->
-=======
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
         <div id="step-2" class="form-step hidden">
           <h2 class="text-2xl font-semibold mb-6 text-center">
             Lifestyle &amp; Goals
@@ -201,11 +143,7 @@
                   id="sedentary"
                   name="activity_level"
                   value="sedentary"
-<<<<<<< HEAD
-                  checked=""
-=======
                   checked
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
                 />
                 <label
                   for="sedentary"
@@ -272,11 +210,7 @@
                   id="lose_weight"
                   name="goal"
                   value="lose_weight"
-<<<<<<< HEAD
-                  checked=""
-=======
                   checked
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
                 />
                 <label
                   for="lose_weight"
@@ -336,10 +270,6 @@
           </div>
         </div>
 
-<<<<<<< HEAD
-        <!-- Step 3: Workout Schedule -->
-=======
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
         <div id="step-3" class="form-step hidden">
           <h2 class="text-2xl font-semibold mb-6 text-center">
             Workout Preferences
@@ -377,13 +307,8 @@
                   type="radio"
                   id="duration_30"
                   name="workout_duration"
-<<<<<<< HEAD
-                  value="30 mins"
-                  checked=""
-=======
                   value="30"
                   checked
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
                 />
                 <label
                   for="duration_30"
@@ -395,11 +320,7 @@
                   type="radio"
                   id="duration_45"
                   name="workout_duration"
-<<<<<<< HEAD
-                  value="45 mins"
-=======
                   value="45"
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
                 />
                 <label
                   for="duration_45"
@@ -411,11 +332,7 @@
                   type="radio"
                   id="duration_60"
                   name="workout_duration"
-<<<<<<< HEAD
-                  value="60 mins"
-=======
                   value="60"
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
                 />
                 <label
                   for="duration_60"
@@ -427,11 +344,7 @@
                   type="radio"
                   id="duration_90"
                   name="workout_duration"
-<<<<<<< HEAD
-                  value="90+ mins"
-=======
                   value="90+"
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
                 />
                 <label
                   for="duration_90"
@@ -443,10 +356,6 @@
           </div>
         </div>
 
-<<<<<<< HEAD
-        <!-- Step 4: Health Conditions -->
-=======
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
         <div id="step-4" class="form-step hidden">
           <h2 class="text-2xl font-semibold mb-6 text-center">
             Health Information
@@ -462,11 +371,7 @@
                 id="medical_conditions"
                 name="medical_conditions"
                 rows="4"
-<<<<<<< HEAD
-                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 input-focus-neon"
-=======
                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 input-focus-neon"
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
                 placeholder="e.g., Asthma, High Blood Pressure. Write 'None' if not applicable."
               ></textarea>
             </div>
@@ -480,21 +385,13 @@
                 id="injuries_or_limitations"
                 name="injuries_or_limitations"
                 rows="4"
-<<<<<<< HEAD
-                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 input-focus-neon"
-=======
                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5 input-focus-neon"
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
                 placeholder="e.g., Bad knee, Shoulder pain. Write 'None' if not applicable."
               ></textarea>
             </div>
           </div>
         </div>
 
-<<<<<<< HEAD
-        <!-- Step 5: Confirmation -->
-=======
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
         <div id="step-5" class="form-step hidden text-center">
           <h2 class="text-2xl font-semibold mb-4">You're All Set!</h2>
           <p class="text-gray-300 mb-6">
@@ -515,38 +412,6 @@
             ></path>
           </svg>
         </div>
-<<<<<<< HEAD
-      </form>
-
-      <!-- Navigation Buttons -->
-      <div class="flex justify-between mt-8">
-        <button
-          id="prevBtn"
-          class="button"
-        >
-          Previous
-        </button>
-        <button
-          id="nextBtn"
-          class="button"
-        >
-          Next
-        </button>
-        <button
-          id="submitBtn"
-          type="submit"
-          form="gymForm"
-          class="button"
-        >
-          Submit
-        </button>
-      </div>
-    </div>
-
-
-  </div>
-{% endblock %}
-=======
       
         <div class="flex justify-between mt-8">
           <button
@@ -575,4 +440,3 @@
     </div>
   </div>
 {% endblock %}
->>>>>>> 7c9735b (Initial local files before pulling Development branch)
