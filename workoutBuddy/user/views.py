@@ -35,13 +35,13 @@ def login_view(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             data = {
-                'username': form.cleaned_data['email'],  # OAuth2PasswordRequestForm uses 'username'
+                'username': form.cleaned_data['email'], 
                 'password': form.cleaned_data['password'],
             }
             try:
                 response = requests.post(
                     f'{FASTAPI_BASE_URL}/api/login',
-                    data=data,  # 👈 send as form data
+                    data=data, 
                     headers={'Content-Type': 'application/x-www-form-urlencoded'}
                 )
                 if response.status_code == 200:
@@ -53,7 +53,7 @@ def login_view(request):
                     return redirect('profile')
                 else:
                     error_detail = response.json().get('detail', 'Invalid credentials')
-                    messages.error(request, f"Login failed: {error_detail}")
+                    messages.error(request, f"Login failed: Login Required")
             except requests.exceptions.RequestException as e:
                 messages.error(request, f"Login request failed: {e}")
     else:
