@@ -1,0 +1,44 @@
+<!-- Navbar -->
+{% load static %}
+ 
+<section id="services" class="py-16 bg-gray-100">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-10">Our Services</h2>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+      
+      <!-- Customized Workout Plan -->
+      <div class="bg-white p-6 rounded-lg shadow hover:scale-105 transition-transform duration-300 text-center flex flex-col justify-between h-full">
+        <img src="{% static 'images/OH5IPT0.jpg' %}" alt="Workout" class="w-16 h-16 rounded-full mx-auto mb-4 object-cover shadow-md border-2 border-gray-300">
+        <h3 class="text-xl font-semibold mb-2">Customize Your Workout</h3>
+        <p>AI-driven routines tailored to your fitness level, time, and goals. Home or gym – you choose.</p>
+        <a href="#">
+          <button class="bg-gray-700 hover:bg-gray-900 text-white font-semibold mt-2 py-2 px-5 rounded transition-all duration-300 transform hover:scale-105" type="submit"> Workout Plan </button>
+        </a>
+      </div>
+
+      <!-- Customized Diet Plan -->
+      <div class="bg-white p-6 rounded-lg shadow hover:scale-105 transition-transform duration-300 text-center flex flex-col justify-between h-full">
+        <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Diet" class="w-16 h-16 rounded-full mx-auto mb-4 object-cover shadow-md border-2 border-gray-300">
+        <h3 class="text-xl font-semibold mb-2 text-[var(--main-color)]">Customize Your Diet</h3>
+        <p>Nutritionist-backed meal plans based on your preferences, allergies, and goals – delicious and effective.</p>
+        <a href="/diet">
+          <button class="bg-gray-700 hover:bg-gray-900 text-white font-semibold mt-2 py-2 px-5 rounded transition-all duration-300 transform hover:scale-105" type="submit"> Diet Plan </button>
+        </a>
+      </div>
+
+      <!-- Progress Tracking -->
+      <div class="bg-white p-6 rounded-lg shadow hover:scale-105 transition-transform duration-300 text-center flex flex-col justify-between h-full">
+        <img src="https://cdn-icons-png.flaticon.com/512/4151/4151740.png" alt="Tracking" class="w-16 h-16 rounded-full mx-auto mb-4 object-cover shadow-lg border-2 border-gray-300">
+        <h3 class="text-xl font-semibold mb-2 ">Track Your Progress</h3>
+        <p>Log workouts, monitor calories, measure BMI, and celebrate milestones in real-time.</p>
+        <a href="#">
+          <button class="bg-gray-700 hover:bg-gray-900 text-white font-semibold mt-2 py-2 px-5 rounded transition-all duration-300 transform hover:scale-105" type="submit"> Trace Progress </button>
+        </a>
+      </div>
+
+    
+
+    </div>
+  </div>
+</section>
