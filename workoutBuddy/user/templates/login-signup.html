@@ -1,121 +1,197 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Monkey Login & Sign Up</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'user/css/styles.css' %}" />
-  </head>
 
-  <body class="bg-gray-100 flex items-center justify-center font-[Inter] max-h-screen mt-4">
-    <div class="w-full max-w-md ">
-      <!-- Monkey Animation -->
-      <div class="main-wrapper mb-[-32px]">
-        <div class="monkey-thought">
-          <div class="buble-1"></div>
-          <div class="monkey-comment"><p>is it an email?</p></div>
-        </div>
-        <div class="img-wrapper">
-          <div class="monkey-face">
-            <img src="{% static 'Images/monkey.png' %}" alt="face" />
-            <div class="eyes-wrapper">
-              <div class="eyes">
-                <div class="eye-brow"></div>
-                <div class="eye-ball"></div>
-              </div>
-              <div class="eyes">
-                <div class="eye-brow"></div>
-                <div class="eye-ball"></div>
-              </div>
-            </div>
-          </div>
-          <img class="monkey-hand" src="{% static 'Images/hand.png' %}" alt="hand" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monkey Login & Sign Up</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'user/css/styles.css' %}" />
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center font-[Inter] max-h-screen mt-4">
+  <div class="w-full max-w-md">
+    <!-- Monkey Animation -->
+    <div class="main-wrapper mb-[-32px]">
+      <div class="monkey-thought">
+        <div class="buble-1"></div>
+        <div class="monkey-comment">
+          <p>is it an email?</p>
         </div>
       </div>
-
-      <!-- Flip Form -->
-      <div id="form-container" class="flip-container">
-        <div class="flipper">
-          <!-- Login Form -->
-          <div class="front">
-            <div class="bg-white p-6 rounded-2xl shadow-lg w-full space-y-4">
-              <a href="{% url 'google_login' %}" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-black hover:text-black transition-all">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
-                Continue with Google
-              </a>
-
-              {% if messages %}
-                {% for message in messages %}
-                  <div class="text-sm text-{{ message.tags }}-600 mb-2">{{ message }}</div>
-                {% endfor %}
-              {% endif %}
-
-              <div class="flex items-center justify-between gap-2 text-sm text-slate-500">
-                <div class="h-px flex-1 bg-slate-200"></div>
-                OR
-                <div class="h-px flex-1 bg-slate-200"></div>
-              </div>
-
-              <h2 class="text-2xl font-semibold text-center text-gray-700">Login</h2>
-              <form method="post" action="{% url 'login' %}" class="flex flex-col items-center justify-center gap-4 space-y-4">
-                {% csrf_token %}
-                <div class="w-3/4 flex flex-col items-center justify-center">
-                  <label for="login-email" class="text-sm font-medium text-gray-600 block mb-1 w-full">Email</label>
-                  <input type="email" name="email" id="login-email" class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all" required />
-                </div>
-                <div class="w-3/4 flex flex-col items-center justify-center">
-                  <label for="login-password" class="text-sm font-medium text-gray-600 block mb-1 w-full">Password</label>
-                  <input type="password" name="password" id="login-password" class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all" required />
-                </div>
-                <button type="submit" name="form_type" value="login" class=" w-3/4 h-12 bg-black hover:bg-gray-900 text-white font-semibold rounded-lg transition-all">Login</button>
-                <p class="text-center text-gray-600 text-sm">
-                  Don't have an account?
-                  <a href="#" id="show-signup" class="font-semibold text-black hover:underline">Sign Up</a>
-                </p>
-              </form>
+      <div class="img-wrapper">
+        <div class="monkey-face">
+          <img src="{% static 'Images/monkey.png' %}" alt="face" />
+          <div class="eyes-wrapper">
+            <div class="eyes">
+              <div class="eye-brow"></div>
+              <div class="eye-ball"></div>
+            </div>
+            <div class="eyes">
+              <div class="eye-brow"></div>
+              <div class="eye-ball"></div>
             </div>
           </div>
+        </div>
+        <img class="monkey-hand" src="{% static 'Images/hand.png' %}" alt="hand" />
+      </div>
+    </div>
 
-          <!-- Signup Form -->
-          <div class="back">
-            <div class="bg-white p-6 rounded-2xl w-full space-y-4">
-              <a href="{% url 'google_login' %}" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-black hover:text-black transition-all">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
-                Continue with Google
-              </a>
+    <!-- Flip Form -->
+    <div id="form-container" class="flip-container">
+      <div class="flipper {% if show_login %}flipped{% endif %}">
 
-              <div class="flex items-center justify-between gap-2 text-sm text-slate-500">
-                <div class="h-px flex-1 bg-slate-200"></div>
-                OR
-                <div class="h-px flex-1 bg-slate-200"></div>
+        <!-- Login Form -->
+        <div class="front">
+          <div class="bg-white p-6 rounded-2xl shadow-lg w-full space-y-4">
+            <a href="{% url 'google_login' %}"
+              class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-black hover:text-black transition-all">
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
+              Continue with Google
+            </a>
+
+            {% if messages %} {% for message in messages %}
+            <div class="text-sm text-{{ message.tags }}-600 mb-2">
+              {{ message }}
+            </div>
+            {% endfor %} {% endif %}
+
+            <div class="flex items-center justify-between gap-2 text-sm text-slate-500">
+              <div class="h-px flex-1 bg-slate-200"></div>
+              OR
+              <div class="h-px flex-1 bg-slate-200"></div>
+            </div>
+
+            <h2 class="text-2xl font-semibold text-center text-gray-700">
+              Login
+            </h2>
+            <form method="post" action="{% url 'login' %}"
+              class="flex flex-col items-center justify-center gap-4 space-y-4" autocomplete="off">
+              {% csrf_token %}
+              <div class="w-3/4 flex flex-col items-center justify-center">
+                <label for="login-email" class="text-sm font-medium text-gray-600 block mb-1 w-full">Email</label>
+                <input type="text" name="email" id="login-email"
+                  class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all"
+                  value="{{ form.email.value|default:'' }}" />
+
+                {% if form.email.errors %}
+                <p class="text-red-500 text-sm mt-2 self-start">
+                  {{ form.email.errors.0 }}
+                </p>
+                {% endif %}
+              </div>
+              <div class="w-3/4 flex flex-col items-center justify-center">
+                <label for="login-password" class="text-sm font-medium text-gray-600 block mb-1 w-full">Password</label>
+                <input type="password" name="password" id="login-password"
+                  class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all" "
+                  />
+                  {% if form.password.errors %}
+                  <p class=" text-red-500 text-sm mt-2 self-start">
+                {{ form.password.errors.0 }}
+                </p>
+                {% endif %}
+              </div>
+              <button type="submit" name="form_type" value="login"
+                class="w-3/4 h-12 bg-black hover:bg-gray-900 text-white font-semibold rounded-lg transition-all">
+                Login
+              </button>
+              {% if login_error %}
+              <p class="text-red-500 text-sm mt-2">{{ login_error }}</p>
+              {% endif %}
+              <p class="text-center text-gray-600 text-sm">
+                Don't have an account?
+                <a href="#" id="show-signup" onclick="flipToRegister()"
+                  class="font-semibold text-black hover:underline">Sign Up</a>
+              </p>
+            </form>
+          </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="back">
+          <div class="bg-white p-6 rounded-2xl w-full space-y-4">
+            <a href="{% url 'google_login' %}"
+              class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-black hover:text-black transition-all">
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
+              Continue with Google
+            </a>
+
+            <div class="flex items-center justify-between gap-2 text-sm text-slate-500">
+              <div class="h-px flex-1 bg-slate-200"></div>
+              OR
+              <div class="h-px flex-1 bg-slate-200"></div>
+            </div>
+
+            <h2 class="text-2xl font-semibold text-center text-gray-800">
+              Create Account
+            </h2>
+            <form method="post" action="{% url 'register' %}"
+              class="flex flex-col items-center justify-center space-y-4 gap-4" autocomplete="off">
+              {% csrf_token %}
+              <!-- SIGNUP EMAIL -->
+              <div class="w-3/4 flex flex-col items-center justify-center">
+                <label for="signup-email" class="text-sm font-medium text-gray-600 block mb-1 w-full">Email</label>
+                <input type="email" name="email" id="signup-email"
+                  class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all"
+                  value="{{ form.email.value|default:'' }}" />
+
+                {% if form.email.errors %}
+                <p class="text-red-500 text-sm mt-2 self-start">
+                  {{ form.email.errors.0 }}
+                </p>
+                {% endif %}
               </div>
 
-              <h2 class="text-2xl font-semibold text-center text-gray-800">Create Account</h2>
-              <form method="post" action="{% url 'register' %}" class="flex flex-col items-center justify-center space-y-4 gap-4">
-                {% csrf_token %}
-                <div class="w-3/4 flex flex-col items-center justify-center">
-                  <label for="signup-email" class="text-sm font-medium text-gray-600 block mb-1 w-full">Email</label>
-                  <input type="email" name="email" id="signup-email" class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all" required />
-                </div>
-                <div class="w-3/4 flex flex-col items-center justify-center">
-                  <label for="signup-password" class="text-sm font-medium text-gray-600 block mb-1 w-full">Password</label>
-                  <input type="password" name="password" id="signup-password" class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all" required />
-                </div>
-                <button type="submit" name="form_type" value="register" class="w-3/4 h-12 bg-black hover:bg-gray-900 text-white font-semibold rounded-lg transition-all">Sign Up</button>
-                <p class="text-center text-gray-600 text-sm">
-                  Already have an account?
-                  <a href="#" id="show-login" class="font-semibold text-black hover:underline">Log In</a>
+              <!-- SIGNUP PASSWORD -->
+              <div class="w-3/4 flex flex-col items-center justify-center">
+                <label for="signup-password"
+                  class="text-sm font-medium text-gray-600 block mb-1 w-full">Password</label>
+                <input type="password" name="password" id="signup-password"
+                  class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all" />
+
+                {% if form.password.errors %}
+                <p class="text-red-500 text-sm mt-2 self-start">
+                  {{ form.password.errors.0 }}
                 </p>
-              </form>
-            </div>
+                {% endif %} {% if register_error %}
+                <p class="text-red-500 text-sm mt-2">{{ register_error }}</p>
+                {% endif %}
+              </div>
+
+              <button type="submit" name="form_type" value="register"
+                class="w-3/4 h-12 bg-black hover:bg-gray-900 text-white font-semibold rounded-lg transition-all">
+                Sign Up
+              </button>
+              <p class="text-center text-gray-600 text-sm">
+                Already have an account?
+                <a href="#" id="show-login" class="font-semibold text-black hover:underline" onclick="flipToLogin()">Log
+                  In</a>
+              </p>
+            </form>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="{% static 'user/js/loginform.js' %}"></script>
-  </body>
+  <script src="{% static 'user/js/loginform.js' %}"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const showLogin = "{{ show_login|yesno:'true,false' }}";
+
+      if (showLogin === "true") {
+        document.querySelector(".flipper").classList.add("flipped");
+      } else {
+        document.querySelector(".flipper").classList.remove("flipped");
+      }
+    });
+  </script>
+
+
+
+</body>
+
 </html>
