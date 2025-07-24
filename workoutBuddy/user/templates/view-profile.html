@@ -1,78 +1,96 @@
 {% extends "index.html" %}
+{% load static %}
+
 
 {% block title %}My Profile | Workout Buddy{% endblock %}
 
 
 {% block content %}
+
+
 <!-- Profile Section -->
-<div class="max-w-6xl mx-auto py-6 px-4 grid grid-cols-1 md:grid-cols-3 gap-8 font-sans">
+<!-- Profile Section -->
+<div class="max-w-6xl mx-auto py-10 px-4 grid grid-cols-1 md:grid-cols-3 gap-8 font-sans bg-black text-white">
 
   <!-- Left: Profile Card -->
-  <div class="flex flex-col items-center bg-white border-2 border-black shadow-2xl rounded-3xl p-6 transition-transform transform hover:scale-105 duration-300">
-    <img
-      src="https://i.pinimg.com/736x/43/44/45/434445fd47baf8a3362a88261ed13ec9.jpg"
-      alt="Profile photo"
-      class="w-36 h-36 rounded-full border-4 border-black shadow-lg object-cover mb-4"
-    />
+  <div
+    class="flex flex-col items-center bg-zinc-900 border border-[var(--neon-green-500)] neon-glow rounded-3xl p-6 transition-transform transform hover:scale-105 duration-300">
+    <img src="https://i.pinimg.com/736x/43/44/45/434445fd47baf8a3362a88261ed13ec9.jpg" alt="Profile photo"
+      class="w-36 h-36 rounded-full border-4 border-[var(--neon-green-500)] object-cover mb-4 shadow-lg" />
 
-    <h3 class="text-2xl font-bold text-gray-800">{{ profile.full_name }}</h3>
+    <h3 class="text-2xl font-bold text-[var(--neon-green-500)]">{{ profile.full_name }}</h3>
 
-    <!-- Edit Button -->
-    <button
-      data-modal-target="edit-profile-modal"
-      data-modal-toggle="edit-profile-modal"
-      class="mt-4 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
-    >
+    <button id="open-edit-modal"
+      class="mt-4 px-4 py-2 bg-[var(--neon-green-500)] text-black font-semibold rounded-md hover:bg-white transition">
       Edit Profile
     </button>
   </div>
 
   <!-- Right: Profile Info Card -->
-  <div class="md:col-span-2 bg-white border-2 border-black shadow-2xl rounded-3xl p-8 transition-transform transform hover:scale-[1.01] duration-300">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-3">👤 Profile Information</h2>
+  <div
+    class="md:col-span-2 bg-zinc-900 border border-[var(--neon-green-500)] neon-glow rounded-3xl p-8 transition-transform transform hover:scale-[1.01] duration-300">
+    <h2 class="text-3xl font-bold text-[var(--neon-green-500)] mb-6 border-b border-[var(--neon-green-500)] pb-3">👤 Profile Information</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-base text-gray-700">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-base">
       <div>
-        <span class="text-gray-500 font-semibold">Full Name</span>
-        <p class="text-lg text-black">{{ profile.full_name }}</p>
+        <span class="text-gray-400 font-semibold">Full Name</span>
+        <p class="text-lg">{{ profile.full_name }}</p>
       </div>
       <div>
-        <span class="text-gray-500 font-semibold">Age</span>
-        <p class="text-lg text-black">{{ profile.age }}</p>
+        <span class="text-gray-400 font-semibold">Age</span>
+        <p class="text-lg">{{ profile.age }}</p>
       </div>
       <div>
-        <span class="text-gray-500 font-semibold">Gender</span>
-        <p class="text-lg text-black">{{ profile.gender|capfirst }}</p>
+        <span class="text-gray-400 font-semibold">Gender</span>
+        <p class="text-lg">{{ profile.gender|capfirst }}</p>
       </div>
       <div>
-        <span class="text-gray-500 font-semibold">Height</span>
-        <p class="text-lg text-black">{{ profile.height }} cm</p>
+        <span class="text-gray-400 font-semibold">Height</span>
+        <p class="text-lg">{{ profile.height }} cm</p>
       </div>
       <div>
-        <span class="text-gray-500 font-semibold">Weight</span>
-        <p class="text-lg text-black">{{ profile.weight }} kg</p>
+        <span class="text-gray-400 font-semibold">Weight</span>
+        <p class="text-lg">{{ profile.weight }} kg</p>
       </div>
       <div>
-        <span class="text-gray-500 font-semibold">Activity Level</span>
-        <p class="text-lg text-black">{{ profile.activity_level|capfirst }}</p>
+        <span class="text-gray-400 font-semibold">Activity Level</span>
+        <p class="text-lg">{{ profile.activity_level|capfirst }}</p>
       </div>
       <div>
-        <span class="text-gray-500 font-semibold">Goal</span>
-        <p class="text-lg text-black">{{ profile.goal|capfirst }}</p>
+        <span class="text-gray-400 font-semibold">Goal</span>
+        <p class="text-lg">{{ profile.goal|capfirst }}</p>
       </div>
       <div>
-        <span class="text-gray-500 font-semibold">Created At</span>
-        <p class="text-lg text-black">{{ profile.created_at|date:"Y-m-d" }}</p>
+        <span class="text-gray-400 font-semibold">Created At</span>
+        <p class="text-lg">{{ profile.created_at|date:"Y-m-d" }}</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
-<div id="edit-profile-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex flex-col justify-center items-center overflow">
-    <div class="p-6">
-      {% include "edit-profile.html" %}
-    </div>
+<!-- Edit Profile Modal -->
+<div id="edit-profile-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center transition-all">
+  <div class="bg-zinc-900 border border-[var(--neon-green-500)] neon-glow rounded-xl w-full max-w-2xl relative text-white">
+    
+    <!-- Close Button -->
+    <button id="close-edit-modal" class="absolute top-2 right-4 text-white hover:text-red-500 text-3xl font-bold">&times;</button>
+
+    {% include "edit-profile.html" %}
+  </div>
 </div>
 
+<!-- Modal Toggle Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const openBtn = document.getElementById("open-edit-modal");
+    const closeBtn = document.getElementById("close-edit-modal");
+    const modal = document.getElementById("edit-profile-modal");
+
+    openBtn.addEventListener("click", () => modal.classList.remove("hidden"));
+    closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.add("hidden");
+    });
+  });
+</script>
 {% endblock %}

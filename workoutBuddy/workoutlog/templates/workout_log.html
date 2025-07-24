@@ -1,0 +1,94 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<div class="max-w-4xl mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-4 text-center">Workout Log</h2>
+
+    {% if workout_plan %}
+    <script id="plan-data" type="application/json">
+      {{ workout_plan.plan|safe }}
+    </script>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        <input type="hidden" name="plan_id" value="{{ workout_plan.id }}">
+
+        <div>
+            <label for="date-selector" class="block text-sm font-medium mb-1">Select Date:</label>
+            <input type="date" id="date-selector" name="selected_date" class="w-full border rounded p-2 mb-4 bg-white"
+                required>
+
+
+        </div>
+
+        <div id="exercise-container" class="space-y-4"></div>
+
+        <div class="mt-6">
+            <label for="status" class="block text-sm font-medium">Overall Status:</label>
+            <select id="status" name="status" required class="w-full border rounded p-2 mt-1 bg-white">
+                <option value="completed">Completed</option>
+                <option value="skipped">Skipped</option>
+            </select>
+        </div>
+
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-4 w-full">Submit
+            Log</button>
+    </form>
+    {% else %}
+    <p class="text-center text-gray-600">No workout plan available.</p>
+    {% endif %}
+</div>
+
+{% if workout_plan %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Safely parse the workout plan data from the script tag
+        const planData = JSON.parse(document.getElementById("plan-data").textContent);
+        const daySelector = document.getElementById("day-selector");
+        const exerciseContainer = document.getElementById("exercise-container");
+
+        daySelector.addEventListener("change", (e) => {
+            const selectedDay = e.target.value;
+            const day = planData.find(d => d.day === selectedDay);
+            exerciseContainer.innerHTML = ""; // Clear previous exercises
+
+            if (!day) return;
+
+            if (day.exercises.length > 0) {
+                day.exercises.forEach(ex => {
+                    // **MODIFIED PART**: Generate HTML with editable input fields
+                    const exHTML = `
+            <div class="p-4 bg-gray-50 border rounded-md shadow-sm">
+              <div class="flex justify-between items-center mb-3">
+                <p class="font-semibold text-lg">${ex.name}</p>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <span class="text-sm font-medium">Completed</span>
+                  <input type="checkbox" name="exercise_${day.day}_${ex.name.replace(/ /g, '_')}" class="h-5 w-5 rounded text-blue-500 focus:ring-blue-400">
+                </label>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="text-xs text-gray-500">Sets</label>
+                  <input type="number" name="sets_${ex.name.replace(/ /g, '_')}" value="${ex.sets}" class="w-full border rounded p-2 mt-1" placeholder="Sets">
+                </div>
+                <div>
+                  <label class="text-xs text-gray-500">Reps</label>
+                  <input type="text" name="reps_${ex.name.replace(/ /g, '_')}" value="${ex.reps}" class="w-full border rounded p-2 mt-1" placeholder="Reps (e.g., 8-12)">
+                </div>
+                <div>
+                  <label class="text-xs text-gray-500">Duration/Rest</label>
+                  <input type="text" name="duration_${ex.name.replace(/ /g, '_')}" value="${ex.duration_per_set || ''}" class="w-full border rounded p-2 mt-1" placeholder="Duration (e.g., 60s)">
+                </div>
+              </div>
+            </div>`;
+                    exerciseContainer.innerHTML += exHTML;
+                });
+            } else {
+                exerciseContainer.innerHTML = '<p class="text-center text-gray-500">🎉 Rest day! No exercises planned.</p>';
+            }
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

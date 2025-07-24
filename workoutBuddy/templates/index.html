@@ -1,24 +1,28 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Workout Buddy{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>{% block title %}Workout Buddy{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    {% block extra_head %}{% endblock %}
+  <!-- Flowbite -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js" defer></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+
+  {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-black text-white font-inter">
-    <main class="container mx-auto">
-        {% include 'mainPage/navbar.html' %}
-        {% block content %}{% endblock %}
-    </main>
+<body class="bg-black text-white font-sans">
+  <main class="container mx-auto px-4 py-6">
+    {% include 'mainPage/navbar.html' %}
+    {% block content %}{% endblock %}
+  </main>
 
-    {% block extra_scripts %}{% endblock %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>
