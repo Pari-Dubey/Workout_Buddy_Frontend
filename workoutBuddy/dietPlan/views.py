@@ -4,6 +4,8 @@ import requests
 FASTAPI_BASE_URL = 'http://localhost:8000'
 
 
+# ===================== DIET PREFERENCE =====================
+
 def diet_preference_view(request):
     allergies_list = ['Nuts', 'Gluten', 'Dairy', 'Soy', 'Eggs', 'Shellfish', 'None']
 
@@ -34,21 +36,20 @@ def diet_preference_view(request):
     # Handle POST submission
     if request.method == 'POST':
         try:
-            #  Extract form fields
+            # Extract form fields
             diet_type = request.POST.get('diet_type')
             activity_level = request.POST.get('activity_level')
             fitness_goal = request.POST.get('fitness_goal')
             experience_level = request.POST.get('experience_level')
             medical_conditions = request.POST.get('medical_conditions', '')
-            past_injuries = request.POST.get('past_injuries', '')
+           
             preferred_workout_style = request.POST.get('preferred_workout_style')
             preferred_training_days = request.POST.get('preferred_training_days')
 
-            # Convert to integer safely
             try:
                 preferred_training_days = int(preferred_training_days)
             except (ValueError, TypeError):
-                preferred_training_days = 3
+                preferred_training_days = 3  # default fallback
 
             # Handle allergies
             allergies = request.POST.getlist('allergies') or []
@@ -56,7 +57,6 @@ def diet_preference_view(request):
             if other_allergy:
                 allergies.append(other_allergy)
 
-            #  Prepare payload to send to FastAPI
             payload = {
                 "diet_type": diet_type,
                 "activity_level": activity_level,
@@ -69,48 +69,61 @@ def diet_preference_view(request):
                 "preferred_training_days_per_week": preferred_training_days
             }
 
-            #  POST to FastAPI
+            # POST to FastAPI
+            headers = {'Authorization': f'Bearer {token}'}
+
             response = requests.post(
-                f"{FASTAPI_BASE_URL}/diet/generate-diet-plan/{user_id}",
-                json=payload
-            )
+            f"{FASTAPI_BASE_URL}/diet/generate-diet-plan/",
+            json=payload,
+            headers=headers
+)
 
-            #  Redirect to result page with plan_id if successful
-            print(response.status_code)
-            if response.status_code == 200 or 201:
-                data = response.json().get("data", {})
-                plan_id = data['diet_plan_id']
+            
 
-                if plan_id:
-                    return redirect('dietPlan:diet_result', plan_id=plan_id)
-                else:
-                    print("[DEBUG] Plan created but no ID returned.")
+            print("[DEBUG] FastAPI status:", response.status_code)
+            print("[DEBUG] FastAPI raw response:", response.text)
+
+            if response.status_code in [200, 201]:
+                try:
+                    data = response.json().get("data", {})
+                    print("[DEBUG] FastAPI response JSON:", data)
+
+                    plan_id = data.get('diet_plan_id')
+                    if plan_id:
+                        return redirect('dietPlan:diet_result', plan_id=plan_id)
+                    else:
+                        print("[DEBUG] Plan created but no diet_plan_id returned:", data)
+                except Exception as e:
+                    print(f"[ERROR] Failed to parse response JSON: {e}")
             else:
-                print("[DEBUG] FastAPI error:", response.text)
+                print("[DEBUG] FastAPI returned error:", response.text)
 
         except Exception as e:
             print(f"[ERROR] Form processing failed: {e}")
 
-    # ⬅ On GET request, render the form
     return render(request, 'diet-form.html', {
         'allergies_list': allergies_list
     })
 
 
+# ===================== DIET RESULT =====================
+
 def diet_result_view(request, plan_id):
-    # Ensure user is authenticated
     token = request.session.get('token')
     if not token:
         return redirect('login')
 
     try:
-        #  Fetch saved plan from FastAPI using the plan_id
-        response = requests.get(f"{FASTAPI_BASE_URL}/diet/diet-plan/{plan_id}")
+       headers = {'Authorization': f'Bearer {token}'}
+       response = requests.get(f"{FASTAPI_BASE_URL}/diet/diet-plan/{plan_id}", headers=headers)
 
-        if response.status_code == 200:
+       print(f"[DEBUG] Fetching diet plan {plan_id} - status: {response.status_code}")
+
+       if response.status_code == 200:
             data = response.json().get("data", {})
-            plan = data.get("ai_generated_plan", {})  # Should be a dict of day: meals
-        else:
+            print("[DEBUG] Diet plan data:", data)
+            plan = data.get("ai_generated_plan", {})
+       else:
             print("[DEBUG] Failed to fetch diet plan:", response.text)
             plan = {}
     except Exception as e:
@@ -120,3 +133,65 @@ def diet_result_view(request, plan_id):
     return render(request, 'diet-result.html', {
         'diet_plan': plan
     })
+
+
+# ===================== MEAL LOG =====================
+
+def meal_log_view(request):
+    token = request.session.get('token')
+    if not token:
+        return redirect('login')
+
+    meal_types = ['breakfast', 'lunch', 'dinner']
+
+    return render(request, 'meal-log.html', {
+        'meal_types': meal_types
+    })
+
+
+def submit_meal_log_view(request):
+    if request.method == 'POST':
+        token = request.session.get('token')
+        date = request.POST.get('date')
+        meal_data = {'date': date, 'breakfast': [], 'lunch': [], 'dinner': []}
+
+        for meal_type in ['breakfast', 'lunch', 'dinner']:
+            items = []
+            for key in request.POST:
+                if key.startswith(f"{meal_type}["):
+                    idx = key[len(meal_type) + 1:].split(']')[0]
+                    field = key.split('[')[2].rstrip(']')
+                    if idx.isdigit():
+                        idx = int(idx)
+                        while len(items) <= idx:
+                            items.append({})
+                        items[idx][field] = request.POST[key]
+
+            for item in items:
+                item_data = {
+                    "item_name": item.get("item_name"),
+                    "quantity": float(item.get("quantity")) if item.get("quantity") else None,
+                    "weight_in_grams": float(item.get("weight_in_grams")) if item.get("weight_in_grams") else None
+                }
+                if item_data["item_name"]:
+                    meal_data[meal_type].append(item_data)
+
+        meal_data = {k: v for k, v in meal_data.items() if v or k == "date"}
+
+        try:
+            headers = {'Authorization': f'Bearer {token}'}
+            response = requests.post(f"{FASTAPI_BASE_URL}/api/progress/meal-log/", json=meal_data,headers=headers)
+
+            print("[DEBUG] Meal log POST status:", response.status_code)
+            print("[DEBUG] Meal log response:", response.text)
+
+            if response.status_code in [200, 201]:
+                return render(request, "meal-log.html", {"message": "Meal log submitted successfully!"})
+            else:
+                return render(request, "meal-log.html", {"message": "Failed to log meal."})
+
+        except Exception as e:
+            print(f"[ERROR] Meal log submission failed: {e}")
+            return render(request, "meal-log.html", {"message": "Error submitting meal log."})
+
+    return redirect('meal_log')
