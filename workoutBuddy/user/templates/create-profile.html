@@ -1,127 +1,130 @@
 {% extends "index.html" %}
 {% block title %}
-  {% if is_editing %}Edit{% else %}Create{% endif %} Profile | Workout Buddy{% endblock %}
+  {% if is_editing %}Edit{% else %}Create{% endif %} Profile | Workout Buddy
+{% endblock %}
 
 {% block content %}
-   <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-        input , select , option{
-          color: black;
-        }
-    </style>
-  
-<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-  <div class="w-full max-w-4xl bg-white border border-black rounded-lg shadow-lg p-10">
+<div class="min-h-screen flex items-center justify-center bg-black text-white px-4 py-10">
+  <div class="w-full max-w-4xl bg-zinc-900 border border-green-500 rounded-xl shadow-xl p-8">
 
-    <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">
-      {% if is_editing %}Create Your Profile{% endif %}
+    <h2 class="text-3xl font-bold text-center text-[var(--neon-green-500)] drop-shadow-md mb-8">
+      {% if is_editing %}Update Your Profile{% else %}Create Your Profile{% endif %}
     </h2>
 
     {% if messages %}
-      <div class="mb-4">
+      <div class="mb-4 text-center">
         {% for message in messages %}
-          <p class="text-{{ message.tags }}-600 text-center">{{ message }}</p>
+          <p class="text-red-400">{{ message }}</p>
         {% endfor %}
       </div>
     {% endif %}
 
     <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {% csrf_token %}
+
+      <!-- Full Name -->
       <div>
-        <label for="full_name" class="block text-sm font-medium text-gray-700">Full Name</label>
-        <input type="text" name="full_name" id="full_name" value="{{ form.data.full_name }}"
-               class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.full_name %} border-red-500 {% endif %}" />
+        <label for="full_name" class="block mb-1 text-sm font-medium">Full Name</label>
+        <input type="text" name="full_name" id="full_name"
+          value="{{ form.data.full_name }}"
+          class="w-full bg-zinc-800 text-white border border-green-500 rounded-md px-4 py-2 focus:outline-none focus:neon-glow transition"
+        />
         {% if form.errors.full_name %}
-          <p class="text-sm text-red-600">{{ form.errors.full_name.0 }}</p>
+          <p class="text-red-400 text-sm mt-1">{{ form.errors.full_name.0 }}</p>
         {% endif %}
       </div>
 
+      <!-- Age -->
       <div>
-        <label for="age" class="block text-sm font-medium text-gray-700">Age</label>
-        <input type="number" name="age" id="age" value="{{ form.data.age }}"
-               class="w-full  mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.age %}border-red-500{% endif %}"  />
+        <label for="age" class="block mb-1 text-sm font-medium">Age</label>
+        <input type="number" name="age" id="age"
+        min="0"
+        max="100"
+          value="{{ form.data.age }}"
+          class="w-full bg-zinc-800 text-white border border-green-500 rounded-md px-4 py-2 focus:outline-none focus:neon-glow transition"
+        />
         {% if form.errors.age %}
-          <p class="text-sm text-red-600">{{ form.errors.age.0 }}</p>
+          <p class="text-red-400 text-sm mt-1">{{ form.errors.age.0 }}</p>
         {% endif %}
       </div>
 
-
+      <!-- Gender -->
       <div>
-        <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+        <label for="gender" class="block mb-1 text-sm font-medium">Gender</label>
         <select name="gender" id="gender"
-                class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.gender %}border-red-500{% endif %}" >
+          class="w-full bg-zinc-800 text-white border border-green-500 rounded-md px-4 py-2 focus:outline-none focus:neon-glow transition">
           <option value="">Select Gender</option>
           <option value="male" {% if form.data.gender == 'male' %}selected{% endif %}>Male</option>
           <option value="female" {% if form.data.gender == 'female' %}selected{% endif %}>Female</option>
           <option value="other" {% if form.data.gender == 'other' %}selected{% endif %}>Other</option>
         </select>
         {% if form.errors.gender %}
-          <p class="text-sm text-red-600">{{ form.errors.gender.0 }}</p>
+          <p class="text-red-400 text-sm mt-1">{{ form.errors.gender.0 }}</p>
         {% endif %}
       </div>
 
+      <!-- Height -->
       <div>
-        <label for="height" class="block text-sm font-medium text-gray-700">Height (cm)</label>
-        <input type="number" name="height" id="height" value="{{ form.data.height }}" step="0.1"
-               class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.height %}border-red-500{% endif %}"  />
+        <label for="height" class="block mb-1 text-sm font-medium">Height (cm)</label>
+        <input type="number" name="height" id="height"
+          value="{{ form.data.height }}"
+          class="w-full bg-zinc-800 text-white border border-green-500 rounded-md px-4 py-2 focus:outline-none focus:neon-glow transition"
+          step="0.1"
+        />
         {% if form.errors.height %}
-          <p class="text-sm text-red-600">{{ form.errors.height.0 }}</p>
+          <p class="text-red-400 text-sm mt-1">{{ form.errors.height.0 }}</p>
         {% endif %}
       </div>
 
+      <!-- Weight -->
       <div>
-        <label for="weight" class="block text-sm font-medium text-gray-700">Weight (kg)</label>
-        <input type="number" name="weight" id="weight" value="{{ form.data.weight }}" step="0.1"
-               class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.weight %}border-red-500{% endif %}"  />
+        <label for="weight" class="block mb-1 text-sm font-medium">Weight (kg)</label>
+        <input type="number" name="weight" id="weight"
+          value="{{ form.data.weight }}"
+          class="w-full bg-zinc-800 text-white border border-green-500 rounded-md px-4 py-2 focus:outline-none focus:neon-glow transition"
+          step="0.1"
+        />
         {% if form.errors.weight %}
-          <p class="text-sm text-red-600">{{ form.errors.weight.0 }}</p>
+          <p class="text-red-400 text-sm mt-1">{{ form.errors.weight.0 }}</p>
         {% endif %}
       </div>
 
-        <div>
-          <label for="activity_level" class="block text-sm font-medium text-gray-700">Activity Level</label>
-          <select name="activity_level" id="activity_level"
-                  class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.activity_level %}border-red-500{% endif %}">
-            <option value="" {% if not form.data.activity_level %}selected{% endif %}>Select Activity Level</option>
-            <option value="sedentary" {% if form.data.activity_level == 'sedentary' %}selected{% endif %}>Sedentary</option>
-            <option value="light" {% if form.data.activity_level == 'light' %}selected{% endif %}>Lightly Active</option>
-            <option value="moderate" {% if form.data.activity_level == 'moderate' %}selected{% endif %}>Moderately Active</option>
-            <option value="active" {% if form.data.activity_level == 'active' %}selected{% endif %}>Active</option>
-            <option value="very_active" {% if form.data.activity_level == 'very_active' %}selected{% endif %}>Very Active</option>
-          </select>
-          {% if form.errors.activity_level %}
-            <p class="text-sm text-red-600 mt-1">{{ form.errors.activity_level.0 }}</p>
-          {% endif %}
-        </div>
+      <!-- Activity Level -->
+      <div>
+        <label for="activity_level" class="block mb-1 text-sm font-medium">Activity Level</label>
+        <select name="activity_level" id="activity_level"
+          class="w-full bg-zinc-800 text-white border border-green-500 rounded-md px-4 py-2 focus:outline-none focus:neon-glow transition">
+          <option value="">Select Activity Level</option>
+          <option value="sedentary" {% if form.data.activity_level == 'sedentary' %}selected{% endif %}>Sedentary</option>
+          <option value="light" {% if form.data.activity_level == 'light' %}selected{% endif %}>Lightly Active</option>
+          <option value="moderate" {% if form.data.activity_level == 'moderate' %}selected{% endif %}>Moderately Active</option>
+          <option value="active" {% if form.data.activity_level == 'active' %}selected{% endif %}>Active</option>
+          <option value="very_active" {% if form.data.activity_level == 'very_active' %}selected{% endif %}>Very Active</option>
+        </select>
+        {% if form.errors.activity_level %}
+          <p class="text-red-400 text-sm mt-1">{{ form.errors.activity_level.0 }}</p>
+        {% endif %}
+      </div>
 
-        <div>
-          <label for="goal" class="block text-sm font-medium text-gray-700 mt-4">Your Goal</label>
-          <select name="goal" id="goal"
-                  class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.goal %}border-red-500{% endif %}">
-            <option value="" {% if not form.data.goal %}selected{% endif %}>Select Goal</option>
-            <option value="lose_weight" {% if form.data.goal == 'lose_weight' %}selected{% endif %}>Lose Weight</option>
-            <option value="gain_muscle" {% if form.data.goal == 'gain_muscle' %}selected{% endif %}>Gain Muscle</option>
-            <option value="maintain_fitness" {% if form.data.goal == 'maintain_fitness' %}selected{% endif %}>Maintain Fitness</option>
-          </select>
-          {% if form.errors.goal %}
-            <p class="text-sm text-red-600 mt-1">{{ form.errors.goal.0 }}</p>
-          {% endif %}
-        </div>
+      <!-- Goal -->
+      <div>
+        <label for="goal" class="block mb-1 text-sm font-medium">Your Goal</label>
+        <select name="goal" id="goal"
+          class="w-full bg-zinc-800 text-white border border-green-500 rounded-md px-4 py-2 focus:outline-none focus:neon-glow transition">
+          <option value="">Select Goal</option>
+          <option value="lose_weight" {% if form.data.goal == 'lose_weight' %}selected{% endif %}>Lose Weight</option>
+          <option value="gain_muscle" {% if form.data.goal == 'gain_muscle' %}selected{% endif %}>Gain Muscle</option>
+          <option value="maintain_fitness" {% if form.data.goal == 'maintain_fitness' %}selected{% endif %}>Maintain Fitness</option>
+        </select>
+        {% if form.errors.goal %}
+          <p class="text-red-400 text-sm mt-1">{{ form.errors.goal.0 }}</p>
+        {% endif %}
+      </div>
 
-
+      <!-- Submit Button -->
       <div class="md:col-span-2 flex justify-center mt-6">
         <button type="submit"
-                class="bg-black text-white py-2 px-6 rounded-md hover:bg-gray-800 transition duration-300">
+          class="bg-[var(--neon-green-500)] text-black px-6 py-2 rounded-md font-bold hover:scale-105 neon-glow animate-glow transition duration-300 ease-in-out">
           {% if is_editing %}Update Profile{% else %}Create Profile{% endif %}
         </button>
       </div>

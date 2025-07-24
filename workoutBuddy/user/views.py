@@ -3,15 +3,14 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import RegisterForm, LoginForm, ProfileForm
 from datetime import datetime
-
+from django.http import JsonResponse
 FASTAPI_BASE_URL = 'http://localhost:8000'
 
 
 def register_view(request):
-    error_message = None  # To hold backend or request errors
+    form = RegisterForm(request.POST or None)
 
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
         if form.is_valid():
             data = {
                 'email': form.cleaned_data['email'],
@@ -21,60 +20,48 @@ def register_view(request):
             try:
                 response = requests.post(f'{FASTAPI_BASE_URL}/api/register', json=data)
                 res_data = response.json()
-                print(res_data.get("status"))
                 if res_data.get("status") == 201:
-                 return redirect('login') + '?show=login'
+                    return redirect('login')
                 else:
-                    error_message = res_data.get("message", "Registration failed.")
+                    form.add_error(None, res_data.get("message", "Registration failed."))
             except requests.exceptions.RequestException as e:
-                error_message = f"Request failed: {e}"
-    else:
-        form = RegisterForm()
+                form.add_error(None, f"Request failed: {e}")
 
-    return render(request, 'login-signup.html', {'form': form, 'register_error': error_message})
-
+    return render(request, 'login-signup.html', {'form': form, 'show_signup': True})
 
 def login_view(request):
-    error_message = None
-    show_login = request.GET.get('show') == 'login'
-
-    if request.method == 'POST' and request.POST.get('form_type') == 'login':
+    if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             data = {
-                'username': form.cleaned_data['email'],
+                'username': form.cleaned_data['email'],  # OAuth2PasswordRequestForm uses 'username'
                 'password': form.cleaned_data['password'],
             }
             try:
                 response = requests.post(
                     f'{FASTAPI_BASE_URL}/api/login',
-                    data=data,
+                    data=data,  # 👈 send as form data
                     headers={'Content-Type': 'application/x-www-form-urlencoded'}
                 )
-                user_data = response.json()
-
-                if 'access_token' in user_data:
+                if response.status_code == 200:
+                    user_data = response.json()
+                    print(user_data)
                     token = user_data.get("access_token")
                     request.session['token'] = token
-                    return redirect('profile')  
+                    return redirect('profile')
                 else:
-                    error_message = user_data.get('detail') or user_data.get('message') or "Login failed."
-
-            except Exception as e:
-                print("Login error:", str(e))
-                error_message = "Please try again later."
-        else:
-            error_message = "Please correct the errors below."
+                    form.add_error(None, "Invalid email or password.")
+            except requests.exceptions.RequestException as e:
+                form.add_error(None, f"Login request failed: {e}")
     else:
         form = LoginForm()
-
-        return render(request, 'login-signup.html', {
-        'form': form,
-        'login_error': error_message,
-        'show_login': show_login 
-    })
+    return render(request, 'login-signup.html', {'form': form , 'show_signup': False})
 
 
+def logout_view(request):
+    request.session.flush() 
+    messages.success(request, "Logged out successfully.")
+    return redirect('login')
 
 def google_login_redirect(request):
     return redirect(f'{FASTAPI_BASE_URL}/auth/google/login')
@@ -93,10 +80,11 @@ def google_login_callback(request):
         messages.error(request, "Google login failed: Missing credentials.")
         return redirect('login')
 
+
 def view_profile(request):
     token = request.session.get("token")
     if not token:
-         return redirect("flip_login_signup") 
+        return redirect("login")
 
     headers = {
         "Authorization": f"Bearer {token}"
@@ -108,11 +96,11 @@ def view_profile(request):
         if response.status_code == 200:
             json_data = response.json()
             if not json_data or 'data' not in json_data or json_data['data'] is None:
-                # This is actually a new user or bad response
-                return redirect('create_profile')
+                return redirect('create_profile')  # No profile exists yet
 
             profile_data = json_data['data']
 
+            # Format created_at if it exists
             created_at_str = profile_data.get('created_at')
             if created_at_str:
                 try:
@@ -120,19 +108,33 @@ def view_profile(request):
                 except ValueError:
                     profile_data['created_at'] = None
 
-            return render(request, 'view-profile.html', {'profile': profile_data})
-        
+            # Fill form with initial values
+            form = ProfileForm(initial={
+                'full_name': profile_data.get('full_name', ''),
+                'age': profile_data.get('age', ''),
+                'gender': profile_data.get('gender', ''),
+                'height': profile_data.get('height', ''),
+                'weight': profile_data.get('weight', ''),
+                'activity_level': profile_data.get('activity_level', ''),
+                'goal': profile_data.get('goal', ''),
+            })
+
+            return render(request, 'view-profile.html', {
+                'form': form,
+                'profile': profile_data,
+                'is_editing': True
+            })
+
+
         else:
             messages.error(request, "Error fetching profile.")
-            return redirect("flip_login_signup")
+            return redirect("login")
 
     except requests.exceptions.RequestException:
         messages.error(request, "Connection error.")
-        return redirect("flip_login_signup")
-      
-    except requests.exceptions.RequestException:
-        messages.error(request, "Connection error.")
         return redirect("login")
+
+
 
 def create_profile(request):
     token = request.session.get('token')
@@ -170,18 +172,18 @@ def create_profile(request):
 
     return render(request, 'create-profile.html', {'form': form})
 
-
 def edit_profile(request):
     token = request.session.get('token')
     if not token:
-        messages.error(request, "You must be logged in to edit a profile.")
-        return redirect('login')
+        return JsonResponse({'success': False, 'message': "Not authenticated"}, status=403)
 
     headers = {'Authorization': f'Bearer {token}'}
-    profile_data = {}
 
     if request.method == 'POST':
-        form = ProfileForm(request.POST)
+        import json
+        data = json.loads(request.body)
+        form = ProfileForm(data)
+
         if form.is_valid():
             try:
                 response = requests.patch(
@@ -189,31 +191,15 @@ def edit_profile(request):
                     headers=headers,
                     json=form.cleaned_data
                 )
+
                 if response.status_code == 200:
-                    # messages.success(request, "Profile updated successfully.")
-                    return redirect('profile')
+                    return JsonResponse({'success': True})
                 else:
                     error_detail = response.json().get("detail", "Unknown error")
-                    messages.error(request, f"Failed to update profile: {error_detail}")
+                    return JsonResponse({'success': False, 'message': error_detail})
             except requests.RequestException as e:
-                messages.error(request, f"Server error: {str(e)}")
-        # If form is invalid, we keep the same form and show errors
+                return JsonResponse({'success': False, 'message': str(e)})
 
-    else:  # GET request
-        try:
-            response = requests.get(f'{FASTAPI_BASE_URL}/api/user/profile', headers=headers)
-            if response.status_code == 200:
-                profile_data = response.json().get("data", {})
-        except requests.RequestException as e:
-            messages.error(request, f"Server is unavailable: {str(e)}")
-            return redirect('profile')
+        return JsonResponse({'success': False, 'message': 'Invalid form data'})
 
-        form = ProfileForm(initial=profile_data)
-
-    return render(request, 'edit-profile.html', {
-        'form': form,
-        'profile_data': profile_data  
-    })
-
-def flip_login_signup(request):
-    return render(request, 'login-signup.html')
+    return JsonResponse({'success': False, 'message': 'Only POST allowed'}, status=405)

@@ -28,9 +28,7 @@ class RegisterForm(forms.Form):
 class LoginForm(forms.Form):
     email = forms.EmailField(
         required=True,
-        widget=forms.EmailInput(attrs={
-            'id': 'login-email'
-        }),
+        widget=forms.EmailInput(attrs={'id': 'login-email'}),
         error_messages={
             'required': 'Email is required.',
             'invalid': 'Enter a valid email address.',
@@ -49,6 +47,7 @@ class LoginForm(forms.Form):
 
 
 class ProfileForm(forms.Form):
+    
     full_name = forms.CharField(
         max_length=50,
         error_messages={
