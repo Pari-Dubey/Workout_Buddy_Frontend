@@ -11,6 +11,7 @@ urlpatterns = [
     path('login-signup/', views.flip_login_signup, name='flip_login_signup'),
 
     path('profile/', views.view_profile, name='profile'),
-    path('profile/create/', views.create_profile, name='profile_form'),
+    path('profile/create/', views.create_profile, name='create_profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
+
 ]

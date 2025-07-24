@@ -4,18 +4,36 @@
   padding: 0;
 }
 
-
+/* simpler and matches JS */
 .flip-container { perspective: 1000px; }
-.flipper { position: relative; transform-style: preserve-3d; transition: transform 0.8s; }
-.flip-container.flipped .flipper { transform: rotateY(180deg); }
-.front, .back {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    width: 100%; height: 100%;
-    position: absolute; top: 0; left: 0;
+
+.flipper {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
 }
-.front { z-index: 2; }
-.back { transform: rotateY(180deg); }
+
+.flipper.flipped {  /* <-- changed selector */
+  transform: rotateY(180deg);
+}
+
+.front, .back {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.front {
+  z-index: 2;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
 
 .main-wrapper{
   width: auto;

@@ -2,34 +2,33 @@
 
 {% block title %}My Profile | Workout Buddy{% endblock %}
 
+
 {% block content %}
-<div class="max-w-6xl mx-auto py-12 px-4 grid grid-cols-1 md:grid-cols-3 gap-8 font-sans">
+<!-- Profile Section -->
+<div class="max-w-6xl mx-auto py-6 px-4 grid grid-cols-1 md:grid-cols-3 gap-8 font-sans">
 
   <!-- Left: Profile Card -->
-  <div
-    class="flex flex-col items-center bg-white border-2 border-black shadow-2xl rounded-3xl p-6 transition-transform transform hover:scale-105 duration-300"
-  >
+  <div class="flex flex-col items-center bg-white border-2 border-black shadow-2xl rounded-3xl p-6 transition-transform transform hover:scale-105 duration-300">
     <img
-      src="https://imgcdn.stablediffusionweb.com/2024/9/21/5e3ae863-6ae8-497f-9ea7-9b24062102d9.jpg" 
+      src="https://i.pinimg.com/736x/43/44/45/434445fd47baf8a3362a88261ed13ec9.jpg"
       alt="Profile photo"
       class="w-36 h-36 rounded-full border-4 border-black shadow-lg object-cover mb-4"
     />
 
     <h3 class="text-2xl font-bold text-gray-800">{{ profile.full_name }}</h3>
-    <p class="text-gray-500 text-sm mt-1 italic">User ID: {{ profile.user_id }}</p>
 
-    <a
-      href="edit/"
-      class="mt-4 bg-black hover:bg-gray-700 text-white px-6 py-2 rounded-full shadow-sm transition duration-300"
+    <!-- Edit Button -->
+    <button
+      data-modal-target="edit-profile-modal"
+      data-modal-toggle="edit-profile-modal"
+      class="mt-4 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
     >
-      ✏️ Edit Profile
-    </a>
+      Edit Profile
+    </button>
   </div>
 
   <!-- Right: Profile Info Card -->
-  <div
-    class="md:col-span-2 bg-white border-2 border-black shadow-2xl rounded-3xl p-8 transition-transform transform hover:scale-[1.01] duration-300"
-  >
+  <div class="md:col-span-2 bg-white border-2 border-black shadow-2xl rounded-3xl p-8 transition-transform transform hover:scale-[1.01] duration-300">
     <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-3">👤 Profile Information</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-base text-gray-700">
@@ -37,42 +36,43 @@
         <span class="text-gray-500 font-semibold">Full Name</span>
         <p class="text-lg text-black">{{ profile.full_name }}</p>
       </div>
-
       <div>
         <span class="text-gray-500 font-semibold">Age</span>
         <p class="text-lg text-black">{{ profile.age }}</p>
       </div>
-
       <div>
         <span class="text-gray-500 font-semibold">Gender</span>
         <p class="text-lg text-black">{{ profile.gender|capfirst }}</p>
       </div>
-
       <div>
         <span class="text-gray-500 font-semibold">Height</span>
         <p class="text-lg text-black">{{ profile.height }} cm</p>
       </div>
-
       <div>
         <span class="text-gray-500 font-semibold">Weight</span>
         <p class="text-lg text-black">{{ profile.weight }} kg</p>
       </div>
-
       <div>
         <span class="text-gray-500 font-semibold">Activity Level</span>
         <p class="text-lg text-black">{{ profile.activity_level|capfirst }}</p>
       </div>
-
       <div>
         <span class="text-gray-500 font-semibold">Goal</span>
         <p class="text-lg text-black">{{ profile.goal|capfirst }}</p>
       </div>
-
       <div>
-        <span class="text-gray-500 font-semibold">Created at</span>
-        <p class="text-lg text-black">{{ profile.created_at }}</p>
+        <span class="text-gray-500 font-semibold">Created At</span>
+        <p class="text-lg text-black">{{ profile.created_at|date:"Y-m-d" }}</p>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<div id="edit-profile-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex flex-col justify-center items-center overflow">
+    <div class="p-6">
+      {% include "edit-profile.html" %}
+    </div>
+</div>
+
 {% endblock %}
