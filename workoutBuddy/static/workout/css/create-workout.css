@@ -75,6 +75,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 /* Remove spinner arrows in Firefox */
 input[type=number] {
-    -moz-appearance: textfield;
+    -moz-appearance: textfield; /* Firefox */
+    -webkit-appearance: none;   /* Chrome, Safari, Edge (WebKit-based) */
+    appearance: none;           /* Standard */
 }
-
