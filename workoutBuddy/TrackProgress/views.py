@@ -55,15 +55,13 @@ def workout_log(request):
         except Exception as e:
             messages.error(request, f"Error: {e}")
 
-        return redirect("workout_logger")  # Make sure name='workout_logger' in your URLConf
+        return redirect("workout_logger")  
 
-    # GET method - fetch plan
     try:
         response = requests.get("http://127.0.0.1:8000/api/workout/plans/user", headers=headers)
         response_data = response.json()
         workout_plan = response_data.get("data", [None])[0]
 
-        # Fix for Django template: replace _id with id
         if workout_plan and "_id" in workout_plan:
             workout_plan["id"] = workout_plan.pop("_id")
 

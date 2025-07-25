@@ -40,7 +40,7 @@ def login_view(request):
             try:
                 response = requests.post(
                     f'{FASTAPI_BASE_URL}/api/login',
-                    data=data,  # 👈 send as form data
+                    data=data,  # send as form data
                     headers={'Content-Type': 'application/x-www-form-urlencoded'}
                 )
                 if response.status_code == 200:
@@ -57,6 +57,55 @@ def login_view(request):
         form = LoginForm()
     return render(request, 'login-signup.html', {'form': form , 'show_signup': False})
 
+def password_flow_view(request):
+    error = ""
+    success = ""
+    token = request.GET.get("token") or request.POST.get("token")
+
+    if request.method == "POST":
+        if token: 
+            password = request.POST.get("new_password")
+            confirm_password = request.POST.get("confirm_password")
+
+            if password != confirm_password:
+                error = "Passwords do not match."
+                return render(request, "forgot-password.html", {"token": token, "error": error})
+
+            response = requests.post(
+                f'{FASTAPI_BASE_URL}/reset-password',
+                data={"token": token, "new_password": password}
+            )
+
+            if response.status_code == 200:
+                success = "Password reset successful. Please log in."
+                return render(request, "forgot-password.html", {"success": success})
+            else:
+                try:
+                    error_data = response.json()
+                    error = error_data.get("message", "Failed to reset password.")
+                except ValueError:
+                    error = "Something went wrong. Could not process server response."
+
+        else: 
+            email = request.POST.get("email")
+            if not email:
+                error = "Email is required."
+                return render(request, "forgot-password.html", {"error": error})
+
+            response = requests.post(
+                f'{FASTAPI_BASE_URL}/forgot-password',
+                json={"email": email}
+            )
+
+            if response.status_code == 200:
+                success = "If the email exists, a reset link has been sent."
+            else:
+                try:
+                    error = response.json().get("message", "Failed to send reset link.")
+                except ValueError:
+                    error = "Could not contact the server."
+
+    return render(request, "forgot-password.html", {"token": token, "error": error, "success": success})
 
 def logout_view(request):
     request.session.flush() 

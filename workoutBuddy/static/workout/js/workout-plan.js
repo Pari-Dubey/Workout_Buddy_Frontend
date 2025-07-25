@@ -416,4 +416,3 @@
              }
         };
         document.head.appendChild(script);
-
