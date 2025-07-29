@@ -2,15 +2,14 @@ from django import forms
 from django.core.exceptions import ValidationError
 import re
 
+# ---------------------- Register Form ----------------------
 class RegisterForm(forms.Form):
     email = forms.EmailField(
         required=True,
-        widget=forms.EmailInput(attrs={
-            'id': 'signup-email'
-        }),
+        widget=forms.EmailInput(attrs={'id': 'signup-email'}),
         error_messages={
             'required': 'Email is required.',
-            'invalid': 'Enter a valid email address',
+            'invalid': 'Enter a valid email address.',
         }
     )
     password = forms.CharField(
@@ -24,7 +23,33 @@ class RegisterForm(forms.Form):
         }
     )
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+        if not re.match(email_regex, email):
+            raise ValidationError("Invalid email format.")
+        return email
 
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if len(password) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
+        if not re.search(r'[A-Za-z]', password) or not re.search(r'\d', password):
+            raise ValidationError("Password must include both letters and numbers.")
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            raise ValidationError("Password must include at least one special character.")
+        return password
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        password = cleaned_data.get("password")
+
+        if email and password and email == password:
+            raise ValidationError("Email and password cannot be the same.")
+        return cleaned_data
+
+# ---------------------- Login Form ----------------------
 class LoginForm(forms.Form):
     email = forms.EmailField(
         required=True,
@@ -45,9 +70,9 @@ class LoginForm(forms.Form):
         }
     )
 
-
+# ---------------------- Profile Form ----------------------
 class ProfileForm(forms.Form):
-    
+
     full_name = forms.CharField(
         max_length=50,
         error_messages={
@@ -102,17 +127,17 @@ class ProfileForm(forms.Form):
     )
 
     activity_level = forms.ChoiceField(
-    choices=[
-        ("sedentary", "Sedentary"),
-        ("light", "Light"),
-        ("moderate", "Moderate"),
-        ("active", "Active"),
-        ("very_active", "Very Active"),
-    ],
-    error_messages={
-        'required': 'Please select your activity level.',
-        'invalid_choice': 'Choose a valid activity level.'
-    }
+        choices=[
+            ("sedentary", "Sedentary"),
+            ("light", "Light"),
+            ("moderate", "Moderate"),
+            ("active", "Active"),
+            ("very_active", "Very Active"),
+        ],
+        error_messages={
+            'required': 'Please select your activity level.',
+            'invalid_choice': 'Choose a valid activity level.'
+        }
     )
 
     goal = forms.ChoiceField(
@@ -127,9 +152,23 @@ class ProfileForm(forms.Form):
         }
     )
 
-    
     def clean_full_name(self):
-        name = self.cleaned_data.get('full_name')
-        if not re.match(r'^[A-Za-z ]+$', name):
-            raise ValidationError("Only letters and spaces are allowed.")
+        name = self.cleaned_data.get('full_name', '').strip()
+        name = re.sub(r'\s+', ' ', name)
+        if not re.fullmatch(r'[A-Za-z]+(?: [A-Za-z]+)*', name):
+            raise ValidationError("Full name must contain only letters and single spaces between words.")
+        if len(name) < 3:
+            raise ValidationError("Full name must be at least 3 characters long.")
         return name
+
+    def clean_height(self):
+        height = self.cleaned_data.get('height')
+        if height and not isinstance(height, (int, float)):
+            raise ValidationError("Height must be a number.")
+        return height
+
+    def clean_weight(self):
+        weight = self.cleaned_data.get('weight')
+        if weight and not isinstance(weight, (int, float)):
+            raise ValidationError("Weight must be a number.")
+        return weight

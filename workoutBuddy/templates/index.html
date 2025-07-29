@@ -1,28 +1,38 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>{% block title %}Workout Buddy{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Workout Buddy{% endblock %}</title>
 
-  <!-- Tailwind CSS via CDN -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Flowbite -->
+  <!-- Flowbite (for components like modals, dropdowns, etc.) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js" defer></script>
 
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  integrity="sha512-...your-integrity-value..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+  <!-- Additional styles/scripts from child templates -->
   {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-black text-white font-sans">
-  <main class="container mx-auto px-4 py-6">
-    {% include 'mainPage/navbar.html' %}
+<body class="bg-[var(--dark-bg)] text-white font-sans min-h-screen">
+
+  <!-- Navbar -->
+  {% include 'mainPage/navbar.html' %}
+
+  <!-- Main Content -->
+  <main>
     {% block content %}{% endblock %}
   </main>
+    {% include 'mainPage/footer.html' %}
 
+  <!-- Scripts or JS from child templates -->
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>

@@ -1,72 +1,82 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/custom.css' %}">
-<link rel="stylesheet" href="{% static 'user/css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'user/css/login-signup.css' %}">
+{% if success_message %}
+<div class="p-4 mb-4 text-green-400 text-center rounded-lg" role="alert">
+  {{ success_message }}
+</div>
+{% endif %}
 
-<div class="login-form-body w-full min-h-screen flex items-center justify-center bg-[var(--dark-bg)] text-[var(--light-text)]">
-    <div class="form-body max-w-4xl w-full border border-[var(--border-color)] p-6 rounded-md shadow-md bg-[var(--dark-card)] neon-glow">
-        <h2 class="form-title text-2xl font-bold mb-6 text-center text-[var(--neon-green-500)]">Workout Log</h2>
+{% if error_message %}
+<div class="p-4 mb-4 text-red-400 text-center rounded-lg" role="alert">
+  {{ error_message }}
+</div>
+{% endif %}
 
-        {% if workout_plan %}
-        <script id="plan-data" type="application/json">
+
+<div
+  class="wokoutlog-form-body w-full flex items-center justify-center bg-[var(--dark-bg)] text-[var(--light-text)]">
+  <div
+    class="form-body max-w-4xl w-full border border-[var(--border-color)] p-6 rounded-md shadow-md bg-[var(--dark-card)] neon-glow">
+    <h2 class="form-title text-2xl font-bold mb-6 text-center text-[var(--neon-green-500)]">Workout Log</h2>
+
+    {% if workout_plan %}
+    <script id="plan-data" type="application/json">
           {{ workout_plan.plan|safe }}
         </script>
-            {% if messages %}
-            {% for message in messages %}
-              <p class="{% if message.tags == 'success' %}text-green-500{% elif message.tags == 'error' %}text-red-500{% endif %} font-semibold text-center mb-4">
-                {{ message }}
-              </p>
-            {% endfor %}
-          {% endif %}
 
 
-        <form method="post" class="form-content flex flex-col gap-6">
-            {% csrf_token %}
-            <input type="hidden" name="plan_id" value="{{ workout_plan.id }}">
 
-            <div class="input-group flex flex-col gap-2">
-                <label for="date-selector" class="input-label text-[var(--mid-text)]">Select Date:</label>
-                <input type="date" id="date-selector" name="selected_date" class="input-field bg-[var(--dark-card)] text-[var(--light-text)] border border-[var(--border-color)] rounded p-2" required>
-            </div>
+    <form method="post" class="form-content flex flex-col gap-6">
+      {% csrf_token %}
+      <input type="hidden" name="plan_id" value="{{ workout_plan.id }}">
 
-            <div id="exercise-container" class="space-y-4"></div>
+      <div class="input-group flex flex-col gap-2">
+        <label for="date-selector" class="input-label text-[var(--mid-text)]">Select Date:</label>
+        <input type="date" id="date-selector" name="selected_date"
+          class="input-field bg-[var(--dark-card)] text-[var(--light-text)] border border-[var(--border-color)] rounded p-2"
+          required>
+      </div>
 
-            <div class="input-group flex flex-col gap-2">
-                <label for="status" class="input-label text-[var(--mid-text)]">Overall Status:</label>
-                <select id="status" name="status" required class="input-field bg-[var(--dark-card)] text-[var(--light-text)] border border-[var(--border-color)] rounded p-2">
-                    <option value="completed">Completed</option>
-                    <option value="skipped">Skipped</option>
-                </select>
-            </div>
+      <div id="exercise-container" class="space-y-4"></div>
 
-            <button type="submit" class="submit-button w-full mt-2">Submit Log</button>
-         
-        </form>
+      <div class="input-group flex flex-col gap-2">
+        <label for="status" class="input-label text-[var(--mid-text)]">Overall Status:</label>
+        <select id="status" name="status" required
+          class="input-field bg-[var(--dark-card)] text-[var(--light-text)] border border-[var(--border-color)] rounded p-2">
+          <option value="completed">Completed</option>
+          <option value="skipped">Skipped</option>
+        </select>
+      </div>
 
-        {% else %}
-        <p class="text-center text-[var(--mid-text)]">No workout plan available.</p>
-        {% endif %}
-    </div>
+      <button type="submit" class="submit-button w-full mt-2">Submit Log</button>
+
+    </form>
+
+    {% else %}
+    <p class="text-center text-[var(--mid-text)]">No workout plan available.</p>
+    {% endif %}
+  </div>
 </div>
 
 {% if workout_plan %}
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const planData = JSON.parse(document.getElementById("plan-data").textContent);
-        const daySelector = document.getElementById("date-selector");
-        const exerciseContainer = document.getElementById("exercise-container");
+  document.addEventListener("DOMContentLoaded", () => {
+    const planData = JSON.parse(document.getElementById("plan-data").textContent);
+    const daySelector = document.getElementById("date-selector");
+    const exerciseContainer = document.getElementById("exercise-container");
 
-        daySelector.addEventListener("change", (e) => {
-            const selectedDay = new Date(e.target.value).toLocaleString('en-US', { weekday: 'long' });
-            const day = planData.find(d => d.day === selectedDay);
-            exerciseContainer.innerHTML = "";
+    daySelector.addEventListener("change", (e) => {
+      const selectedDay = new Date(e.target.value).toLocaleString('en-US', { weekday: 'long' });
+      const day = planData.find(d => d.day === selectedDay);
+      exerciseContainer.innerHTML = "";
 
-            if (!day) return;
+      if (!day) return;
 
-            if (day.exercises.length > 0) {
-                day.exercises.forEach(ex => {
-                    const exHTML = `
+      if (day.exercises.length > 0) {
+        day.exercises.forEach(ex => {
+          const exHTML = `
                         <div class="p-4 bg-[var(--dark-card-transparent)] border border-[var(--border-color)] rounded-md shadow-sm text-[var(--light-text)]">
                           <div class="flex justify-between items-center mb-3">
                             <p class="font-semibold text-lg text-[var(--neon-green-400)]">${ex.name}</p>
@@ -90,13 +100,13 @@
                             </div>
                           </div>
                         </div>`;
-                    exerciseContainer.innerHTML += exHTML;
-                });
-            } else {
-                exerciseContainer.innerHTML = '<p class="text-center text-[var(--mid-text)]">🎉 Rest day! No exercises planned.</p>';
-            }
+          exerciseContainer.innerHTML += exHTML;
         });
+      } else {
+        exerciseContainer.innerHTML = '<p class="text-center text-[var(--mid-text)]">🎉 Rest day! No exercises planned.</p>';
+      }
     });
+  });
 </script>
 {% endif %}
 {% endblock %}

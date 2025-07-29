@@ -4,15 +4,14 @@ from django.contrib import messages
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
 def workout_log(request):
     token = request.session.get("token")
     if not token:
-        messages.error(request, "Please login to view your workout plan.")
         return redirect("login")
 
     headers = {"Authorization": f"Bearer {token}"}
-    
+    context = {}
+
     if request.method == "POST":
         date = request.POST.get("selected_date")
         plan_id = request.POST.get("plan_id")
@@ -26,7 +25,7 @@ def workout_log(request):
                 sets = request.POST.get(f"sets_{exercise_name}", 0)
                 reps = request.POST.get(f"reps_{exercise_name}", "")
                 duration = request.POST.get(f"duration_{exercise_name}", "")
-                
+
                 exercises_data.append({
                     "name": exercise_name,
                     "sets": int(sets),
@@ -42,20 +41,21 @@ def workout_log(request):
             "created_at": timezone.now().isoformat(),
             "exercises": exercises_data
         }
-        print(payload)
 
         try:
             response = requests.post("http://127.0.0.1:8000/api/workout/complete/", json=payload, headers=headers)
-            response_data=response.json()
-            print(response_data)
-            if response_data['status'] == 201:
-                messages.success(request, "Workout log submitted successfully.")
-            else:
-                messages.error(request, f"Failed to submit log: {response_data['message']}")
-        except Exception as e:
-            messages.error(request, f"Error: {e}")
+            response_data = response.json()
 
-        return redirect("workout_logger")  
+            if response_data.get("status") == 201:
+                context["success_message"] = "Workout log submitted successfully."
+            else:
+                context["error_message"] = f"Failed to submit log: {response_data.get('message', 'Unknown error')}"
+        except Exception as e:
+            context["error_message"] = f"Error while submitting workout log: {e}"
+
+        # Continue to GET the latest workout plan even after POST
+        # so that the user stays on the same page
+        # instead of redirecting
 
     try:
         response = requests.get("http://127.0.0.1:8000/api/workout/plans/user", headers=headers)
@@ -65,8 +65,8 @@ def workout_log(request):
         if workout_plan and "_id" in workout_plan:
             workout_plan["id"] = workout_plan.pop("_id")
 
+        context["workout_plan"] = workout_plan
     except Exception as e:
-        workout_plan = None
-        messages.error(request, f"Failed to load workout plan: {e}")
+        context["error_message"] = f"Failed to load workout plan: {e}"
 
-    return render(request, "workout_log.html", {"workout_plan": workout_plan})
+    return render(request, "workout_log.html", context)

@@ -1,74 +1,30 @@
+{% extends 'index.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mainPage Buddy</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-<style>
-  html {
-    scroll-behavior: smooth;
-  }
-</style>  
- 
 
-</head>
-<body class="font-sans text-gray-800">
+{% block title %}Home | Workout Buddy{% endblock %}
 
-  {% include 'mainPage/navbar.html' %}
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
 
-  <!-- Hero Section-->
- <style>
-  @keyframes zoomFade {
-    0% {
-      transform: scale(1.05);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
+{% block content %}
 
-  .zoom-fade {
-    animation: zoomFade 2s ease-out forwards;
-  }
-
-  @keyframes fadeUp {
-    0% {
-      transform: translateY(40px);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  .fade-up {
-    animation: fadeUp 0.8s ease-out forwards;
-  }
-</style>
-
-<section id="home" class="relative h-screen ">
+<!-- Hero Section -->
+<section id="home" class="relative h-screen">
   <div class="absolute inset-0 overflow-hidden">
     <video class="w-full h-full object-cover object-center scale-110" autoplay muted loop>
-        <source src="{% static 'videos/Yoga.mp4' %}" type="video/mp4">
-    
+      <source src="{% static 'videos/Yoga.mp4' %}" type="video/mp4">
     </video>
-
     <div class="absolute inset-0 bg-black bg-opacity-40"></div>
   </div>
 
- 
   <div class="relative z-10 flex items-center justify-center h-full px-6 text-center text-white">
     <div class="fade-up">
-      <p class="text-md tracking-widest text-yellow-50 uppercase mb-4">A fresh approach to healthy life</p>
+      <p class="text-md tracking-widest text-neon-300 uppercase mb-4">A fresh approach to healthy life</p>
       <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Unlock your potential with good nutrition</h1>
       <div class="flex justify-center space-x-4">
         <a href="{% url 'register' %}"
-           class="bg-white hover:bg-gray-400 text-black font-semibold py-2 px-5 rounded transition-all duration-300 transform hover:scale-105">
+           class="bg-neon-600 hover:bg-neon-700 text-black font-semibold py-2 px-5 rounded transition-all duration-300 transform hover:scale-105">
           Get Started
         </a>
       </div>
@@ -76,20 +32,12 @@
   </div>
 </section>
 
+<!-- Our Stories Section -->
+{% include 'mainPage/stories.html' %}
+
+<!-- Our Services Section -->
+{% include 'mainPage/services.html' %}
 
 
-  <!-- Our Stories Section -->
-     {% include 'mainPage/stories.html' %}
 
-  <!-- Our Services Section -->
-   {% include 'mainPage/services.html' %}
-
-  <!-- Contact Section -->
-    {% include 'mainPage/contact_us.html' %}
-
- <!-- Footer -->
-{% include 'mainPage/footer.html' %}
-
-
-</body>
-</html>
+{% endblock %}
