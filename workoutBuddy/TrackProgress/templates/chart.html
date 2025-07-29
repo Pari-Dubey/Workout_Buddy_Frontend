@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Calorie Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    canvas {
+      max-width: 90%;
+      margin: 30px auto;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 12px;
+      background-color: #0f0;
+      border: none;
+      cursor: pointer;
+      color: #000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Diet Progress Chart</h1>
+
+<canvas id="calorieChart" width="800" height="400"></canvas>
+
+<div id="buttons"></div>
+
+<script>
+  const rawData = {{ chart_data|safe }};
+
+  if (!rawData) {
+    document.getElementById('calorieChart').remove();
+    document.body.innerHTML += "<p>No data available for selected dates.</p>";
+  } else {
+    const config = {
+      type: 'line',
+      data: rawData,
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: (ctx) => 'Point Style: ' + ctx.chart.data.datasets[0].pointStyle
+          }
+        }
+      }
+    };
+
+    const chart = new Chart(document.getElementById('calorieChart'), config);
+
+    const pointStyles = [
+      'circle', 'cross', 'crossRot', 'dash', 'line', 'rect', 'rectRounded', 'rectRot', 'star', 'triangle', false
+    ];
+
+    const buttonsContainer = document.getElementById('buttons');
+
+    pointStyles.forEach(style => {
+      const btn = document.createElement('button');
+      btn.innerText = 'Style: ' + (style || 'None');
+      btn.onclick = () => {
+        chart.data.datasets.forEach(dataset => dataset.pointStyle = style);
+        chart.update();
+      };
+      buttonsContainer.appendChild(btn);
+    });
+  }
+</script>
+
+</body>
+</html>

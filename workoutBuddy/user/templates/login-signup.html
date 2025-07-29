@@ -6,192 +6,157 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Monkey Login & Sign Up</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'user/css/styles.css' %}" />
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center font-[Inter] max-h-screen mt-4">
-  <div class="w-full max-w-md">
-    <!-- Monkey Animation -->
-    <div class="main-wrapper mb-[-32px]">
-      <div class="monkey-thought">
-        <div class="buble-1"></div>
-        <div class="monkey-comment">
-          <p>is it an email?</p>
-        </div>
-      </div>
-      <div class="img-wrapper">
-        <div class="monkey-face">
-          <img src="{% static 'Images/monkey.png' %}" alt="face" />
-          <div class="eyes-wrapper">
-            <div class="eyes">
-              <div class="eye-brow"></div>
-              <div class="eye-ball"></div>
-            </div>
-            <div class="eyes">
-              <div class="eye-brow"></div>
-              <div class="eye-ball"></div>
-            </div>
+<body class="font-[Inter]">
+  <div class="login-form-body" >
+    <div class="w-full max-w-md p-4">
+      <div class="main-wrapper">
+        <div class="monkey-thought">
+          <div class="buble-1"></div>
+          <div class="monkey-comment">
+            <p>is it an email?</p>
           </div>
         </div>
-        <img class="monkey-hand" src="{% static 'Images/hand.png' %}" alt="hand" />
-      </div>
-    </div>
-
-    <!-- Flip Form -->
-    <div id="form-container" class="flip-container">
-      <div class="flipper {% if show_login %}flipped{% endif %}">
-
-        <!-- Login Form -->
-        <div class="front">
-          <div class="bg-white p-6 rounded-2xl shadow-lg w-full space-y-4">
-            <a href="{% url 'google_login' %}"
-              class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-black hover:text-black transition-all">
-              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
-              Continue with Google
-            </a>
-
-            {% if messages %} {% for message in messages %}
-            <div class="text-sm text-{{ message.tags }}-600 mb-2">
-              {{ message }}
-            </div>
-            {% endfor %} {% endif %}
-
-            <div class="flex items-center justify-between gap-2 text-sm text-slate-500">
-              <div class="h-px flex-1 bg-slate-200"></div>
-              OR
-              <div class="h-px flex-1 bg-slate-200"></div>
-            </div>
-
-            <h2 class="text-2xl font-semibold text-center text-gray-700">
-              Login
-            </h2>
-            <form method="post" action="{% url 'login' %}"
-              class="flex flex-col items-center justify-center gap-4 space-y-4" autocomplete="off">
-              {% csrf_token %}
-              <div class="w-3/4 flex flex-col items-center justify-center">
-                <label for="login-email" class="text-sm font-medium text-gray-600 block mb-1 w-full">Email</label>
-                <input type="text" name="email" id="login-email"
-                  class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all"
-                  value="{{ form.email.value|default:'' }}" />
-
-                {% if form.email.errors %}
-                <p class="text-red-500 text-sm mt-2 self-start">
-                  {{ form.email.errors.0 }}
-                </p>
-                {% endif %}
+        <div class="img-wrapper">
+          <div class="monkey-face">
+            <img src="{% static 'Images/monkey.png' %}" alt="face" />
+            <div class="eyes-wrapper">
+              <div class="eyes">
+                <div class="eye-brow"></div>
+                <div class="eye-ball"></div>
               </div>
-              <div class="w-3/4 flex flex-col items-center justify-center">
-                <label for="login-password" class="text-sm font-medium text-gray-600 block mb-1 w-full">Password</label>
-                <input type="password" name="password" id="login-password"
-                  class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all" "
-                  />
-                  {% if form.password.errors %}
-                  <p class=" text-red-500 text-sm mt-2 self-start">
-                {{ form.password.errors.0 }}
-                </p>
-                {% endif %}
+              <div class="eyes">
+                <div class="eye-brow"></div>
+                <div class="eye-ball"></div>
               </div>
-              <button type="submit" name="form_type" value="login"
-                class="w-3/4 h-12 bg-black hover:bg-gray-900 text-white font-semibold rounded-lg transition-all">
-                Login
-              </button>
-              {% if login_error %}
-              <p class="text-red-500 text-sm mt-2">{{ login_error }}</p>
-              {% endif %}
-              <p class="text-center text-gray-600 text-sm">
-                Don't have an account?
-                <a href="#" id="show-signup" onclick="flipToRegister()"
-                  class="font-semibold text-black hover:underline">Sign Up</a>
-              </p>
-            </form>
+            </div>
           </div>
+          <img class="monkey-hand" src="{% static 'Images/hand.png' %}" alt="hand" />
         </div>
+      </div>
 
-        <!-- Signup Form -->
-        <div class="back">
-          <div class="bg-white p-6 rounded-2xl w-full space-y-4">
-            <a href="{% url 'google_login' %}"
-              class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-black hover:text-black transition-all">
-              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
-              Continue with Google
-            </a>
+      <div id="form-container" class="flip-container {% if show_signup %}flipped{% endif %}">
+        <div class="flipper">
+          <!-- login -->
+          <div class="front">
+            <div class="form-body ">
+              <a href="{% url 'google_login' %}" class="social-button">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
+                Continue with Google
+              </a>
 
-            <div class="flex items-center justify-between gap-2 text-sm text-slate-500">
-              <div class="h-px flex-1 bg-slate-200"></div>
-              OR
-              <div class="h-px flex-1 bg-slate-200"></div>
+              <div class="divider">
+                <div class="divider-line"></div>OR<div class="divider-line"></div>
+              </div>
+
+              <h2 class="form-title">Login</h2>
+              <form method="post" action="{% url 'login' %}" class="form-content">
+                {% csrf_token %}
+
+                <div class="input-group">
+                  <label for="login-email" class="input-label">Email</label>
+                  <input type="text" name="email" id="login-email"
+                    class="input-field {% if form.email.errors %}border-red-500{% endif %}"
+                    value="{{ form.email.value|default_if_none:'' }}" />
+                  {% for error in form.email.errors %}
+                  <p class="error-text">{{ error }}</p>
+                  {% endfor %}
+                </div>
+
+                <div class="input-group">
+                  <label for="login-password" class="input-label">Password</label>
+                  <input type="password" name="password" id="login-password"
+                    class="input-field password-input {% if form.password.errors %}border-red-500{% endif %}" />
+
+                  {% for error in form.password.errors %}
+                  <p class="error-text text-sm text-red-500 mt-1">{{ error }}</p>
+                  {% endfor %}
+
+                  <div class="text-right mt-1">
+                    <a href="{% url 'password_flow' %}" class="text-sm text-blue-600 hover:underline">
+                      Forgot Password?
+                    </a>
+                  </div>
+                </div>
+                {% if form.non_field_errors %}
+                <div class="error-text w-full text-left">
+                  {% for error in form.non_field_errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+                {% endif %}
+
+                <button type="submit" name="form_type" value="login" class="submit-button">Login</button>
+                <p class="switch-form-text">
+                  Don't have an account?
+                  <a href="/register" id="show-signup" class="switch-form-link">Sign Up</a>
+                </p>
+              </form>
             </div>
+          </div>
 
-            <h2 class="text-2xl font-semibold text-center text-gray-800">
-              Create Account
-            </h2>
-            <form method="post" action="{% url 'register' %}"
-              class="flex flex-col items-center justify-center space-y-4 gap-4" autocomplete="off">
-              {% csrf_token %}
-              <!-- SIGNUP EMAIL -->
-              <div class="w-3/4 flex flex-col items-center justify-center">
-                <label for="signup-email" class="text-sm font-medium text-gray-600 block mb-1 w-full">Email</label>
-                <input type="email" name="email" id="signup-email"
-                  class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all"
-                  value="{{ form.email.value|default:'' }}" />
+          <!-- Signup -->
+          <div class="back">
+            <div class="form-body">
+              <a href="{% url 'google_login' %}" class="social-button">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
+                Continue with Google
+              </a>
 
-                {% if form.email.errors %}
-                <p class="text-red-500 text-sm mt-2 self-start">
-                  {{ form.email.errors.0 }}
-                </p>
-                {% endif %}
+              <div class="divider">
+                <div class="divider-line"></div>OR<div class="divider-line"></div>
               </div>
 
-              <!-- SIGNUP PASSWORD -->
-              <div class="w-3/4 flex flex-col items-center justify-center">
-                <label for="signup-password"
-                  class="text-sm font-medium text-gray-600 block mb-1 w-full">Password</label>
-                <input type="password" name="password" id="signup-password"
-                  class="w-full h-12 border border-gray-300 rounded-lg px-4 transition-all" />
+              <h2 class="form-title">Create Account</h2>
+              <form method="post" action="{% url 'register' %}" class="form-content">
+                {% csrf_token %}
 
-                {% if form.password.errors %}
-                <p class="text-red-500 text-sm mt-2 self-start">
-                  {{ form.password.errors.0 }}
-                </p>
-                {% endif %} {% if register_error %}
-                <p class="text-red-500 text-sm mt-2">{{ register_error }}</p>
+                <div class="input-group">
+                  <label for="signup-email" class="input-label">Email</label>
+                  <input type="text" name="email" id="signup-email"
+                    class="input-field {% if form.email.errors %}border-red-500{% endif %}"
+                    value="{{ form.email.value|default_if_none:'' }}" required />
+                  {% for error in form.email.errors %}
+                  <p class="error-text">{{ error }}</p>
+                  {% endfor %}
+                </div>
+
+                <div class="input-group">
+                  <label for="signup-password" class="input-label">Password</label>
+                  <input type="password" name="password" id="signup-password"
+                    class="input-field password-input {% if form.password.errors %}border-red-500{% endif %}"
+                    required />
+                  {% for error in form.password.errors %}
+                  <p class="error-text">{{ error }}</p>
+                  {% endfor %}
+                </div>
+
+                {% if form.non_field_errors %}
+                <div class="error-text w-full text-left">
+                  {% for error in form.non_field_errors %}
+                  <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
                 {% endif %}
-              </div>
 
-              <button type="submit" name="form_type" value="register"
-                class="w-3/4 h-12 bg-black hover:bg-gray-900 text-white font-semibold rounded-lg transition-all">
-                Sign Up
-              </button>
-              <p class="text-center text-gray-600 text-sm">
-                Already have an account?
-                <a href="#" id="show-login" class="font-semibold text-black hover:underline" onclick="flipToLogin()">Log
-                  In</a>
-              </p>
-            </form>
+                <button type="submit" name="form_type" value="register" class="submit-button">Sign Up</button>
+
+                <p class="switch-form-text">
+                  Already have an account?
+                  <a href="/login" id="show-login" class="switch-form-link">Log In</a>
+                </p>
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
   <script src="{% static 'user/js/loginform.js' %}"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const showLogin = "{{ show_login|yesno:'true,false' }}";
-
-      if (showLogin === "true") {
-        document.querySelector(".flipper").classList.add("flipped");
-      } else {
-        document.querySelector(".flipper").classList.remove("flipped");
-      }
-    });
-  </script>
-
-
-
 </body>
 
 </html>

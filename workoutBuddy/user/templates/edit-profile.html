@@ -1,143 +1,173 @@
 {% load static %}
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-black rounded-xl overflow-hidden shadow-2xl border border-neon-600">
+  <!-- Left: Neon Profile Card -->
+<div class="bg-gradient-to-br text-white flex flex-col items-center justify-center py-8 px-4"
+     style="background-image: linear-gradient(to bottom right, #1fb904, #0a8d36, #000000);">
+  <img src="https://i.pinimg.com/736x/43/44/45/434445fd47baf8a3362a88261ed13ec9.jpg" alt="Profile Photo"
+    class="w-32 h-32 rounded-full border-4 border-neon-400 shadow-lg object-cover mb-4" />
+  <h3 class="text-2xl font-semibold text-center text-white break-words px-2">
+    {{ profile.full_name|default:"Your Name" }}
+  </h3>
+  {% if profile.created_at %}
+  <p class="text-sm text-white mt-2">Joined on: {{ profile.created_at|date:"F j, Y" }}</p>
+  {% endif %}
+</div>
 
-<style>
-  input[type=number]::-webkit-inner-spin-button,
-  input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  input[type=number] {
-    -moz-appearance: textfield;
-  }
-  input, select {
-    color: black;
-  }
-</style>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-black rounded-xl overflow-hidden shadow-xl">
-  <!-- Left: Indigo Profile Card -->
-  <div class="bg-indigo-900 text-white flex flex-col items-center justify-center py-8 px-4">
-    <img
-      src="https://i.pinimg.com/736x/43/44/45/434445fd47baf8a3362a88261ed13ec9.jpg"
-      alt="Profile Photo"
-      class="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover mb-4"
-    />
-    <h3 class="text-2xl font-semibold text-center break-words px-2">
-      {{ profile.full_name|default:"Your Name" }}
-    </h3>
-  </div>
 
   <!-- Right: Form Fields -->
-  <div class="md:col-span-2 p-6">
-    <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">
+  <div class="md:col-span-2 p-6 bg-black text-white">
+    <h2 class="text-2xl font-bold text-center text-neon-300 mb-6">
       {% if is_editing %}Edit Your Profile{% else %}Create Your Profile{% endif %}
     </h2>
 
     {% if messages %}
-      <div class="mb-4">
-        {% for message in messages %}
-          <p class="text-{{ message.tags }}-600 text-center">{{ message }}</p>
-        {% endfor %}
-      </div>
+    <div class="mb-4 text-center">
+      {% for message in messages %}
+      <p class="text-{{ message.tags }}-400">{{ message }}</p>
+      {% endfor %}
+    </div>
     {% endif %}
 
-    <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form id="edit-profile-form" method="post" action="{% url 'edit_profile' %}" class="space-y-6" enctype="multipart/form-data">
       {% csrf_token %}
 
-      <!-- Full Name -->
-      <div>
-        <label for="full_name" class="block text-sm font-medium text-gray-700">Full Name</label>
-        <input type="text" name="full_name" id="full_name" value="{{ form.data.full_name }}"
-               class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.full_name %}border-red-500{% endif %}" />
-        {% if form.errors.full_name %}
-          <p class="text-sm text-red-600">{{ form.errors.full_name.0 }}</p>
-        {% endif %}
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Full Name -->
+        <div>
+          <label for="full_name" class="block text-sm font-medium text-neon-400">Full Name</label>
+          <input type="text" name="full_name" id="full_name" value="{{ form.full_name.value }}"
+            class="mt-1 w-full px-4 py-2 bg-gray-900 text-neon-100 border border-neon-600 rounded-md focus:ring-neon-500 focus:border-neon-500 sm:text-sm">
+        </div>
 
-      <!-- Age -->
-      <div>
-        <label for="age" class="block text-sm font-medium text-gray-700">Age</label>
-        <input type="number" name="age" id="age" value="{{ form.data.age }}"
-               class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.age %}border-red-500{% endif %}" />
-        {% if form.errors.age %}
-          <p class="text-sm text-red-600">{{ form.errors.age.0 }}</p>
-        {% endif %}
-      </div>
+        <!-- Age -->
+        <div>
+          <label for="age" class="block text-sm font-medium text-neon-400">Age</label>
+          <input type="number" name="age" id="age" value="{{ form.age.value }}"
+            class="mt-1 w-full px-4 py-2 bg-gray-900 text-neon-100 border border-neon-600 rounded-md focus:ring-neon-500 focus:border-neon-500 sm:text-sm">
+        </div>
 
-      <!-- Gender -->
-      <div>
-        <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
-        <select name="gender" id="gender"
-                class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.gender %}border-red-500{% endif %}">
-          <option value="">Select Gender</option>
-          <option value="male" {% if form.data.gender == 'male' %}selected{% endif %}>Male</option>
-          <option value="female" {% if form.data.gender == 'female' %}selected{% endif %}>Female</option>
-          <option value="other" {% if form.data.gender == 'other' %}selected{% endif %}>Other</option>
-        </select>
-        {% if form.errors.gender %}
-          <p class="text-sm text-red-600">{{ form.errors.gender.0 }}</p>
-        {% endif %}
-      </div>
+        <!-- Gender -->
+        <div>
+          <label for="gender" class="block text-sm font-medium text-neon-400">Gender</label>
+          <select name="gender" id="gender"
+            class="mt-1 w-full px-4 py-2 bg-gray-900 text-neon-100 border border-neon-600 rounded-md focus:ring-neon-500 focus:border-neon-500 sm:text-sm">
+            {% for value, name in form.gender.field.choices %}
+            <option value="{{ value }}" {% if form.gender.value == value %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+          </select>
+        </div>
 
-      <!-- Height -->
-      <div>
-        <label for="height" class="block text-sm font-medium text-gray-700">Height (cm)</label>
-        <input type="number" name="height" id="height" value="{{ form.data.height }}" step="0.1"
-               class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.height %}border-red-500{% endif %}" />
-        {% if form.errors.height %}
-          <p class="text-sm text-red-600">{{ form.errors.height.0 }}</p>
-        {% endif %}
-      </div>
+        <!-- Height -->
+        <div>
+          <label for="height" class="block text-sm font-medium text-neon-400">Height (cm)</label>
+          <input type="number" step="0.1" name="height" id="height" value="{{ form.height.value }}"
+            class="mt-1 w-full px-4 py-2 bg-gray-900 text-neon-100 border border-neon-600 rounded-md focus:ring-neon-500 focus:border-neon-500 sm:text-sm">
+        </div>
 
-      <!-- Weight -->
-      <div>
-        <label for="weight" class="block text-sm font-medium text-gray-700">Weight (kg)</label>
-        <input type="number" name="weight" id="weight" value="{{ form.data.weight }}" step="0.1"
-               class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.weight %}border-red-500{% endif %}" />
-        {% if form.errors.weight %}
-          <p class="text-sm text-red-600">{{ form.errors.weight.0 }}</p>
-        {% endif %}
-      </div>
+        <!-- Weight -->
+        <div>
+          <label for="weight" class="block text-sm font-medium text-neon-400">Weight (kg)</label>
+          <input type="number" step="0.1" name="weight" id="weight" value="{{ form.weight.value }}"
+            class="mt-1 w-full px-4 py-2 bg-gray-900 text-neon-100 border border-neon-600 rounded-md focus:ring-neon-500 focus:border-neon-500 sm:text-sm">
+        </div>
 
-      <!-- Activity Level -->
-      <div>
-        <label for="activity_level" class="block text-sm font-medium text-gray-700">Activity Level</label>
-        <select name="activity_level" id="activity_level"
-                class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.activity_level %}border-red-500{% endif %}">
-          <option value="" {% if not form.data.activity_level %}selected{% endif %}>Select Activity Level</option>
-          <option value="sedentary" {% if form.data.activity_level == 'sedentary' %}selected{% endif %}>Sedentary</option>
-          <option value="light" {% if form.data.activity_level == 'light' %}selected{% endif %}>Lightly Active</option>
-          <option value="moderate" {% if form.data.activity_level == 'moderate' %}selected{% endif %}>Moderately Active</option>
-          <option value="active" {% if form.data.activity_level == 'active' %}selected{% endif %}>Active</option>
-          <option value="very_active" {% if form.data.activity_level == 'very_active' %}selected{% endif %}>Very Active</option>
-        </select>
-        {% if form.errors.activity_level %}
-          <p class="text-sm text-red-600">{{ form.errors.activity_level.0 }}</p>
-        {% endif %}
+        <!-- Activity Level -->
+        <div>
+          <label for="activity_level" class="block text-sm font-medium text-neon-400">Activity Level</label>
+          <select name="activity_level" id="activity_level"
+            class="mt-1 w-full px-4 py-2 bg-gray-900 text-neon-100 border border-neon-600 rounded-md focus:ring-neon-500 focus:border-neon-500 sm:text-sm">
+            {% for value, name in form.activity_level.field.choices %}
+            <option value="{{ value }}" {% if form.activity_level.value == value %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+          </select>
+        </div>
       </div>
 
       <!-- Goal -->
       <div>
-        <label for="goal" class="block text-sm font-medium text-gray-700">Your Goal</label>
+        <label for="goal" class="block text-sm font-medium text-neon-400">Primary Goal</label>
         <select name="goal" id="goal"
-                class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md {% if form.errors.goal %}border-red-500{% endif %}">
-          <option value="" {% if not form.data.goal %}selected{% endif %}>Select Goal</option>
-          <option value="lose_weight" {% if form.data.goal == 'lose_weight' %}selected{% endif %}>Lose Weight</option>
-          <option value="gain_muscle" {% if form.data.goal == 'gain_muscle' %}selected{% endif %}>Gain Muscle</option>
-          <option value="maintain_fitness" {% if form.data.goal == 'maintain_fitness' %}selected{% endif %}>Maintain Fitness</option>
+          class="mt-1 w-full px-4 py-2 bg-gray-900 text-neon-100 border border-neon-600 rounded-md focus:ring-neon-500 focus:border-neon-500 sm:text-sm">
+          {% for value, name in form.goal.field.choices %}
+          <option value="{{ value }}" {% if form.goal.value == value %}selected{% endif %}>{{ name }}</option>
+          {% endfor %}
         </select>
-        {% if form.errors.goal %}
-          <p class="text-sm text-red-600">{{ form.errors.goal.0 }}</p>
-        {% endif %}
       </div>
 
       <!-- Submit Button -->
-      <div class="md:col-span-2 flex justify-center mt-6">
-        <button type="submit"
-                class="bg-black text-white py-2 px-6 rounded-md hover:bg-gray-800 transition duration-300">
-          {% if is_editing %}Update Profile{% else %}Create Profile{% endif %}
+      <div class="flex justify-end pt-4">
+        <a href="{% url 'profile' %}"
+          class="inline-flex items-center px-6 py-2 border border-neon-500 text-neon-300 bg-gray-800 hover:bg-gray-700 rounded-md text-sm shadow transition-all duration-300">
+          Cancel
+        </a>
+        <button type="submit" id="save-button"
+          class="ml-3 inline-flex items-center justify-center px-6 py-2 bg-neon-600 hover:bg-neon-700 text-white font-medium rounded-md shadow-md hover:shadow-neon-500/50 focus:outline-none focus:ring-2 focus:ring-neon-500 transition-all duration-300">
+          <span id="save-button-text">Save Changes</span>
+          <svg id="save-loading" class="hidden ml-2 w-5 h-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4l-3 3 3 3H4a8 8 0 01-8-8z">
+            </path>
+          </svg>
         </button>
       </div>
     </form>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("edit-profile-form");
+    const saveButton = document.getElementById("save-button");
+    const saveButtonText = document.getElementById("save-button-text");
+    const saveLoading = document.getElementById("save-loading");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const formData = new FormData(form);
+      const jsonData = {};
+
+      formData.forEach((value, key) => {
+        jsonData[key] = value;
+      });
+
+      saveButton.disabled = true;
+      saveButtonText.textContent = "Saving...";
+      saveLoading.classList.remove("hidden");
+
+      fetch("{% url 'edit_profile' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken
+        },
+        body: JSON.stringify(jsonData)
+      })
+        .then(response => response.json())
+        .then(data => {
+          saveButton.disabled = false;
+          saveButtonText.textContent = "Save Changes";
+          saveLoading.classList.add("hidden");
+
+          if (data.success) {
+            window.location.href = "{% url 'profile' %}";
+          } else {
+            alert("Error: " + (data.message || "Something went wrong."));
+          }
+        })
+        .catch(error => {
+          saveButton.disabled = false;
+          saveButtonText.textContent = "Save Changes";
+          saveLoading.classList.add("hidden");
+          console.error("Error:", error);
+          alert("An error occurred.");
+        });
+    });
+  });
+</script>
+{% endblock %}
