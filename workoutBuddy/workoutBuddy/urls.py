@@ -21,9 +21,10 @@ from . import views
 urlpatterns = [
    path('admin/', admin.site.urls),
    path('', views.HomePage),
+   path('about/', views.AboutPage),
     
    path('', include('user.urls')),
    path('diet/', include(('dietPlan.urls', 'dietPlan'), namespace='dietPlan')),
    path('workout/', include('workout.urls')),
-   path('', include('TrackProgress.urls')),
+   path('', include('trackProgress.urls')),
 ]

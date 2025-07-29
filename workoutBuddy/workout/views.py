@@ -7,7 +7,6 @@ from .forms import CreateWorkoutForm
 FASTAPI_BASE_URL = 'http://localhost:8000'
 
 
-@csrf_exempt  # Remove this in production!
 def create_workout_plan(request):
     if request.method == "POST":
         form = CreateWorkoutForm(request.POST)
