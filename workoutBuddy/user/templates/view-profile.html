@@ -9,27 +9,26 @@
 
 
 <!-- Profile Section -->
-<!-- Profile Section -->
-<div class="max-w-6xl mx-auto py-10 px-4 grid grid-cols-1 md:grid-cols-3 gap-8 font-sans bg-black text-white">
+<div class="max-w-6xl mx-auto py-10 px-4 grid grid-cols-1 md:grid-cols-3 gap-8 font-sans ">
 
   <!-- Left: Profile Card -->
   <div
-    class="flex flex-col items-center bg-zinc-900 border border-[var(--neon-green-500)] neon-glow rounded-3xl p-6 transition-transform transform hover:scale-105 duration-300">
+    class="flex flex-col items-center bg-zinc-900 border border-[var(--neon-green-600)]  rounded-3xl p-6 transition-transform transform hover:scale-105 duration-300">
     <img src="https://i.pinimg.com/736x/43/44/45/434445fd47baf8a3362a88261ed13ec9.jpg" alt="Profile photo"
       class="w-36 h-36 rounded-full border-4 border-[var(--neon-green-500)] object-cover mb-4 shadow-lg" />
 
-    <h3 class="text-2xl font-bold text-[var(--neon-green-500)]">{{ profile.full_name }}</h3>
+    <h3 class="text-2xl font-bold text-[var(--neon-green-600)]">{{ profile.full_name }}</h3>
 
     <button id="open-edit-modal"
-      class="mt-4 px-4 py-2 bg-[var(--neon-green-500)] text-black font-semibold rounded-md hover:bg-white transition">
+      class="mt-4 px-4 py-2 bg-[var(--neon-green-600)] text-black font-semibold rounded-md hover:bg-neon-700 transition">
       Edit Profile
     </button>
   </div>
 
   <!-- Right: Profile Info Card -->
   <div
-    class="md:col-span-2 bg-zinc-900 border border-[var(--neon-green-500)] neon-glow rounded-3xl p-8 transition-transform transform hover:scale-[1.01] duration-300">
-    <h2 class="text-3xl font-bold text-[var(--neon-green-500)] mb-6 border-b border-[var(--neon-green-500)] pb-3">👤 Profile Information</h2>
+    class="md:col-span-2 bg-zinc-900 border border-[var(--neon-green-500)]  rounded-3xl p-8 transition-transform transform hover:scale-[1.01] duration-300">
+    <h2 class="text-3xl font-bold text-[var(--neon-green-600)] mb-6 border-b border-[var(--neon-green-600)] pb-3">👤 Profile Information</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-base">
       <div>
@@ -57,10 +56,6 @@
         <p class="text-lg">{{ profile.activity_level|capfirst }}</p>
       </div>
       <div>
-        <span class="text-gray-400 font-semibold">Goal</span>
-        <p class="text-lg">{{ profile.goal|capfirst }}</p>
-      </div>
-      <div>
         <span class="text-gray-400 font-semibold">Created At</span>
         <p class="text-lg">{{ profile.created_at|date:"Y-m-d" }}</p>
       </div>
@@ -70,7 +65,7 @@
 
 <!-- Edit Profile Modal -->
 <div id="edit-profile-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center transition-all">
-  <div class="bg-zinc-900 border border-[var(--neon-green-500)] neon-glow rounded-xl w-full max-w-2xl relative text-white">
+  <div class="bg-zinc-900 border border-[var(--neon-green-600)]  rounded-xl w-full max-w-2xl relative text-white">
     
     <!-- Close Button -->
     <button id="close-edit-modal" class="absolute top-2 right-4 text-white hover:text-red-500 text-3xl font-bold">&times;</button>

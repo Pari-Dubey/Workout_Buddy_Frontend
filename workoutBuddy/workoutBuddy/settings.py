@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'user',
     'dietPlan',
     'workout',
-    'TrackProgress',
+    'trackProgress',
 ]
 
 MIDDLEWARE = [
@@ -56,20 +56,23 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'workoutBuddy.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / 'templates'],  # ✅ FIXED: Proper path to your templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'user.context_processors.auth_token',  # ✅ This is correct
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'workoutBuddy.wsgi.application'
 

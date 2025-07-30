@@ -10,11 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginEmail = document.getElementById("login-email");
   const signupEmail = document.getElementById("signup-email");
   const passwordInputs = document.querySelectorAll(".password-input");
+
   const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   let degree = 13;
   let inputPrevLength = [];
 
-  // Flip with route change
+  // Flip animation with route change
   if (showSignupBtn) {
     showSignupBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -31,23 +32,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Handle browser back/forward navigation
+  // Flip based on browser navigation
   window.addEventListener("popstate", () => {
     const path = window.location.pathname;
-    if (path === "/register") {
-      flipContainer.classList.add("flipped");
-    } else {
-      flipContainer.classList.remove("flipped");
-    }
+    flipContainer.classList.toggle("flipped", path === "/register");
   });
 
-  // Monkey hand logic
+  // Monkey hand show/hide
   const showMonkeyHand = () => {
-    monkeyHand.style.transform = "translateY(35%)";
+    if (monkeyHand) monkeyHand.style.transform = "translateY(35%)";
   };
 
   const hideMonkeyHand = () => {
-    monkeyHand.style.transform = "translateY(120%)";
+    if (monkeyHand) monkeyHand.style.transform = "translateY(120%)";
   };
 
   document.addEventListener("click", (e) => {
@@ -58,13 +55,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (e.target.type !== "email") {
-      monkeyFace.style.transform = `perspective(800px) rotateZ(0deg)`;
+      if (monkeyFace) monkeyFace.style.transform = `perspective(800px) rotateZ(0deg)`;
       monkeyEyesBrows.forEach((eyeBrow) => {
         eyeBrow.style.transform = "translateY(-2px)";
       });
     }
   });
 
+  // Monkey face rotation on email input
   const handleEmailInput = (emailInput) => {
     emailInput.addEventListener("input", (e) => {
       const currentLength = String(e.target.value).length;
@@ -78,34 +76,82 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (!emailInput.value.match(mailformat)) {
-        monkeyThought.style.opacity = "1";
+        if (monkeyThought) monkeyThought.style.opacity = "1";
         monkeyEyesBrows.forEach((eyeBrow) => {
           eyeBrow.style.transform = "translateY(3px)";
         });
       } else {
-        monkeyThought.style.opacity = "0";
+        if (monkeyThought) monkeyThought.style.opacity = "0";
         monkeyEyesBrows.forEach((eyeBrow) => {
           eyeBrow.style.transform = "translateY(-3px)";
         });
       }
 
-      monkeyFace.style.transform = `perspective(800px) rotateZ(${degree}deg)`;
+      if (monkeyFace) monkeyFace.style.transform = `perspective(800px) rotateZ(${degree}deg)`;
     });
   };
 
   if (loginEmail) handleEmailInput(loginEmail);
   if (signupEmail) handleEmailInput(signupEmail);
 
+  // Password field focus/blur
   passwordInputs.forEach((input) => {
     input.addEventListener("focus", showMonkeyHand);
     input.addEventListener("blur", hideMonkeyHand);
   });
 
-  // On initial load, flip based on current URL
+  // Initial flip based on URL path
   const path = window.location.pathname.replace(/\/$/, "");
-  if (path === "/register") {
-    flipContainer.classList.add("flipped");
-  } else {
-    flipContainer.classList.remove("flipped");
+  flipContainer.classList.toggle("flipped", path === "/register");
+
+  // Input error clearing logic
+  const fields = ['login-email', 'login-password', 'signup-email', 'signup-password'];
+  fields.forEach((id) => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.addEventListener("input", () => {
+        const parent = input.closest(".input-group");
+        if (parent) {
+          parent.querySelectorAll(".error-text").forEach((e) => e.remove());
+          input.classList.remove("border-red-500");
+        }
+        const nonFieldErrors = parent?.parentElement?.querySelector(".text-red-500.text-sm.mt-1");
+        if (nonFieldErrors) nonFieldErrors.remove();
+      });
+    }
+  });
+
+  // Login form loading state
+  const loginForm = document.querySelector('form[action*="login"]');
+  const loginBtn = document.getElementById("login-button");
+  const loginText = document.getElementById("login-button-text");
+  const loginSpinner = document.getElementById("login-spinner");
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", () => {
+      if (loginBtn) {
+        loginBtn.disabled = true;
+        loginBtn.classList.add("opacity-60", "cursor-not-allowed");
+      }
+      if (loginText) loginText.textContent = "Logging in...";
+      if (loginSpinner) loginSpinner.classList.remove("hidden");
+    });
+  }
+
+  // Signup form loading state
+  const signupForm = document.querySelector('form[action*="register"]');
+  const signupBtn = document.getElementById("signup-button");
+  const signupText = document.getElementById("signup-button-text");
+  const signupSpinner = document.getElementById("signup-spinner");
+
+  if (signupForm) {
+    signupForm.addEventListener("submit", () => {
+      if (signupBtn) {
+        signupBtn.disabled = true;
+        signupBtn.classList.add("opacity-60", "cursor-not-allowed");
+      }
+      if (signupText) signupText.textContent = "Signing up...";
+      if (signupSpinner) signupSpinner.classList.remove("hidden");
+    });
   }
 });

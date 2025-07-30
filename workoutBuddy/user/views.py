@@ -4,6 +4,8 @@ from django.contrib import messages
 from .forms import RegisterForm, LoginForm, ProfileForm
 from datetime import datetime
 from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
 FASTAPI_BASE_URL = 'http://localhost:8000'
 
 
@@ -20,14 +22,73 @@ def register_view(request):
             try:
                 response = requests.post(f'{FASTAPI_BASE_URL}/api/register', json=data)
                 res_data = response.json()
+
                 if res_data.get("status") == 201:
-                    return redirect('login')
+                    # Redirect to verify with email
+                    return redirect(f'/verify/?email={data["email"]}')
                 else:
                     form.add_error(None, res_data.get("message", "Registration failed."))
             except requests.exceptions.RequestException as e:
                 form.add_error(None, f"Request failed: {e}")
 
     return render(request, 'login-signup.html', {'form': form, 'show_signup': True})
+
+
+@csrf_exempt
+def verify_otp(request):
+    email = request.GET.get("email") or request.POST.get("email")
+    if not email:
+        return redirect("register")  # Or handle missing email more gracefully
+
+    # Check if user is already verified
+    try:
+        check_resp = requests.get(f"{FASTAPI_BASE_URL}/api/check-verification", params={"email": email})
+        if check_resp.status_code == 200 and check_resp.json().get("verified"):
+            return redirect(f"/login")
+    except requests.exceptions.RequestException as e:
+        return render(request, "verify.html", {
+            "error": f"Verification check failed: {e}",
+            "email": email
+        })
+
+    # Handle OTP submission
+    if request.method == "POST":
+        otp = request.POST.get("otp")
+        response = requests.post(f"{FASTAPI_BASE_URL}/api/verify", json={"email": email, "otp": otp})
+
+        if response.status_code == 200:
+            return redirect(f"/login")
+        else:
+            return render(request, "verify.html", {
+                "error": response.json().get("message", "Verification failed"),
+                "email": email
+            })
+
+    # Initial GET request to show form
+    return render(request, "verify.html", {"email": email})
+
+@csrf_exempt
+def resend_otp(request):
+    email = request.POST.get("email") or request.GET.get("email")
+
+    if request.method == "POST" and email:
+        response = requests.post(f"{FASTAPI_BASE_URL}/api/resend-otp", json={"email": email})
+
+        json_response = response.json()
+        if json_response['status'] == 200:
+            return render(request, "verify.html", {
+                "message": "OTP resent successfully",
+                "email": email
+            })
+        else:
+            return render(request, "verify.html", {
+                "error": response.json().get("message", "Resend failed"),
+                "email": email
+            })
+
+    # fallback: redirect and pass email in query params
+    return redirect(f"/verify?email={email}" if email else "verify_otp")
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -45,7 +106,7 @@ def login_view(request):
                 )
                 if response.status_code == 200:
                     user_data = response.json()
-                    print(user_data)
+                
                     token = user_data.get("access_token")
                     request.session['token'] = token
                     return redirect('profile')
@@ -70,15 +131,16 @@ def password_flow_view(request):
             if password != confirm_password:
                 error = "Passwords do not match."
                 return render(request, "forgot-password.html", {"token": token, "error": error})
-
+            
+        
             response = requests.post(
                 f'{FASTAPI_BASE_URL}/reset-password',
                 data={"token": token, "new_password": password}
             )
-
+     
             if response.status_code == 200:
                 success = "Password reset successful. Please log in."
-                return render(request, "forgot-password.html", {"success": success})
+                return redirect('login')
             else:
                 try:
                     error_data = response.json()
@@ -118,11 +180,9 @@ def google_login_redirect(request):
 
 def google_login_callback(request):
     token = request.GET.get('token')
-    user_id = request.GET.get('user_id')
 
-    if token and user_id:
+    if token:
         request.session['token'] = token
-        request.session['user_id'] = user_id
         messages.success(request, "Google login successful!")
         return redirect('profile')
     else:
@@ -198,8 +258,7 @@ def create_profile(request):
         form = ProfileForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            print(data)
-
+       
             try:
                 response = requests.post(
                     f'{FASTAPI_BASE_URL}/api/user/profile',
@@ -229,10 +288,13 @@ def edit_profile(request):
     headers = {'Authorization': f'Bearer {token}'}
 
     if request.method == 'POST':
-        import json
-        data = json.loads(request.body)
-        form = ProfileForm(data)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON'}, status=400)
 
+        form = ProfileForm(data)  # ✅ Correct: use parsed JSON data here
+        
         if form.is_valid():
             try:
                 response = requests.patch(
@@ -240,7 +302,6 @@ def edit_profile(request):
                     headers=headers,
                     json=form.cleaned_data
                 )
-
                 if response.status_code == 200:
                     return JsonResponse({'success': True})
                 else:
@@ -248,7 +309,11 @@ def edit_profile(request):
                     return JsonResponse({'success': False, 'message': error_detail})
             except requests.RequestException as e:
                 return JsonResponse({'success': False, 'message': str(e)})
-
-        return JsonResponse({'success': False, 'message': 'Invalid form data'})
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid form data',
+            'errors': form.errors.get_json_data()
+        }, status=200)
 
     return JsonResponse({'success': False, 'message': 'Only POST allowed'}, status=405)
+
