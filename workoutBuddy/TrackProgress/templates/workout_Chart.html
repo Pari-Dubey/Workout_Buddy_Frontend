@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Workout Progress Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #00ff88;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .date-range {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      color: #ccc;
+    }
+
+    .summary-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .box {
+      background: #1a1a1a;
+      border: 1px solid #00ff88;
+      padding: 1rem;
+      flex: 1 1 200px;
+      border-radius: 10px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .box:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #00ff88;
+    }
+
+    .chart-container {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 10px;
+      margin-bottom: 3rem;
+    }
+
+    .chart-container canvas {
+      max-width: 100%;
+      max-height: 250px;
+    }
+
+    .tips {
+      margin-top: 2rem;
+    }
+
+    .tips h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #00ff88;
+      padding-bottom: 0.5rem;
+    }
+
+    .tip {
+      background: #121212;
+      border-left: 4px solid #00ff88;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+    }
+
+    .tip h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+    }
+
+    .tip ul {
+      list-style: disc;
+      padding-left: 1.5rem;
+    }
+
+    .tip li {
+      margin-bottom: 0.4rem;
+      color: #cccccc;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% else %}
+  <div class="container">
+    <h1>Workout Progress</h1>
+    <div class="date-range">{{ start_date }} → {{ end_date }}</div>
+
+    <!-- Summary Stats -->
+    <div class="summary-grid">
+      <div class="box">Consistency: {{ consistency|default:"0" }}%</div>
+      <div class="box">Average RPE: {{ average_rpe|default:"0" }}</div>
+      <div class="box">Total Sets: {{ total_sets|default:"0" }}</div>
+      <div class="box">Total Reps: {{ total_reps|default:"0" }}</div>
+      <div class="box">Calories Burned: {{ calories_burned|default:"0" }}</div>
+      <div class="box">Current Weight: {{ weight|default:"0" }} kg</div>
+    </div>
+
+    <!-- Bar Chart: Muscle Distribution -->
+    <div class="chart-container">
+      <h2 style="text-align:center;">Muscle Group Distribution</h2>
+      <canvas id="muscleChart"></canvas>
+    </div>
+
+    <!-- Line Chart: Calories Burned Over Time -->
+    <div class="chart-container">
+      <h2 style="text-align:center;">Calories Burned Over Time</h2>
+      <canvas id="calorieLineChart" height="200"></canvas>
+    </div>
+
+    <!-- Trainer Tips Section -->
+    <div class="tips">
+      <h2>Trainer's Tips</h2>
+      {% for tip in tips %}
+        <div class="tip">
+          <h3>{{ tip.title }}</h3>
+          <ul>
+            {% for t in tip.tips %}
+              <li>{{ t }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+ <!-- JSON Data for Chart.js -->
+  {{ muscle_distribution|json_script:"muscle-data" }}
+  {{ workout_dates|json_script:"workout-dates" }}
+  {{ calorie_per_day|json_script:"calorie-values" }}
+
+  <!-- Chart.js Scripts -->
+  <script>
+    const muscleData = JSON.parse(document.getElementById("muscle-data").textContent || '{}');
+    const calorieDates = JSON.parse(document.getElementById("workout-dates").textContent || '[]');
+    const calorieValues = JSON.parse(document.getElementById("calorie-values").textContent || '[]');
+
+    console.log(muscleData)
+    console.log(calorieDates)
+    console.log(calorieValues)
+    // Muscle Group Chart
+    const ctx = document.getElementById('muscleChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(muscleData),
+        datasets: [{
+          label: 'Workout % Focused',
+          data: Object.values(muscleData),
+          backgroundColor: '#00ff88',
+          borderColor: '#00ff88',
+          borderWidth: 1,
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#00ff88' },
+            grid: { color: '#222' }
+          },
+          x: {
+            ticks: { color: '#00ff88' },
+            grid: { color: '#222' }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: { color: '#00ff88' }
+          }
+        }
+      }
+    });
+
+    // Calories Over Time Line Chart
+    const calorieCtx = document.getElementById('calorieLineChart').getContext('2d');
+    new Chart(calorieCtx, {
+      type: 'line',
+      data: {
+        labels: calorieDates,
+        datasets: [{
+          label: 'Calories Burned',
+          data: calorieValues,
+          fill: false,
+          borderColor: '#00ff88',
+          backgroundColor: 'rgba(0, 255, 136, 0.2)',
+          tension: 0.3,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: { color: '#00ff88' }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#00ff88' },
+            grid: { color: '#222' }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#00ff88' },
+            grid: { color: '#222' }
+          }
+        }
+      }
+    });
+  </script>
+  {% endif %}
+</body>
+</html>
