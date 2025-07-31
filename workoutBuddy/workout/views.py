@@ -3,8 +3,31 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt  # only for development
 from .forms import CreateWorkoutForm
+from django.http import JsonResponse
 
 FASTAPI_BASE_URL = 'http://localhost:8000'
+
+# views.py
+
+
+def profile_json_view(request):
+    token = request.session.get('token')
+    print(token)
+    if not token:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+    
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+    try:
+        response = requests.get(f"{FASTAPI_BASE_URL}/api/user/profile", headers=headers)
+        print(response)
+        if response.status_code == 200:
+            json_data = response.json()
+            return JsonResponse(json_data.get("data", {}))
+        return JsonResponse({"error": "Failed to fetch profile"}, status=response.status_code)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 def create_workout_plan(request):
@@ -35,6 +58,7 @@ def create_workout_plan(request):
                 print("Sending payload to FastAPI:", payload)
 
                 token = request.session.get("token")
+                print(token)
                 if not token:
                     messages.error(request, "You must be logged in to generate your plan.")
                     return redirect("login")
@@ -45,6 +69,7 @@ def create_workout_plan(request):
                     headers=headers,
                     json=payload
                 )
+                
 
 
                 if response.status_code == 200:

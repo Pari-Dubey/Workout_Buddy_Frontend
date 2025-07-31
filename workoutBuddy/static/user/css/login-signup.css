@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Rokkitt&display=swap');
 
 :root {
-  --neon-green: #39ff14;
+  --neon-green: #26ca08;
   --neon-glow: 0 0 3px var(--neon-green), 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
   --dark-bg: #0d0d0d;
   --dark-bg-transparent: rgba(17, 17, 17, 0.8);
@@ -130,8 +130,8 @@
 
 .input-field:focus {
   outline: none;
-  border-color: var(--neon-green);
-  box-shadow: var(--neon-glow);
+  /* border-color: var(--neon-green); */
+  /* box-shadow: var(--neon-glow); */
 }
 
 .error-text {
@@ -180,7 +180,6 @@
 
 .submit-button:hover {
   color: var(--dark-bg);
-  box-shadow: var(--neon-glow);
 }
 
 .submit-button::before {

@@ -2,15 +2,15 @@
 {% load static %}
 
 {% block extra_head %}
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="{% static 'user/css/login-signup.css' %}" />
+
+<link rel="stylesheet" href="{% static 'user/css/login-signup.css' %}" />
 {% endblock %}
 
 {% block content %}
 
-  <div class="login-form-body ">
-    <div class="w-full max-w-md mt-4">
-      <!-- <div class="main-wrapper">
+<div class="login-form-body ">
+  <div class="w-full max-w-md mt-4">
+    <!-- <div class="main-wrapper">
         <div class="monkey-thought">
           <div class="buble-1"></div>
           <div class="monkey-comment">
@@ -35,139 +35,177 @@
         </div>
       </div> -->
 
-      <div id="form-container" class="flip-container {% if show_signup %}flipped{% endif %}">
-        <div class="flipper">
-          <!-- Login -->
-          <div class="front">
-            <div class="form-body">
-              <a href="{% url 'google_login' %}" class="social-button">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
-                Continue with Google
-              </a>
+    <div id="form-container" class="flip-container {% if show_signup %}flipped{% endif %}">
+      <div class="flipper">
+        <!-- Login -->
+        <div class="front">
+          <div class="form-body">
+            <a href="{% url 'google_login' %}" class="social-button">
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
+              Continue with Google
+            </a>
 
-              <div class="divider">
-                <div class="divider-line"></div>OR<div class="divider-line"></div>
+            <div class="divider">
+              <div class="divider-line"></div>OR<div class="divider-line"></div>
+            </div>
+
+            <h2 class="form-title">Login</h2>
+            <form method="post" action="{% url 'login' %}" class="form-content">
+              {% csrf_token %}
+
+              <div class="input-group">
+                <label for="login-email" class="input-label">Email</label>
+                <input type="text" name="email" id="login-email"
+                  class="input-field {% if form.email.errors %}border-red-500{% endif %}"
+                  value="{{ form.email.value|default_if_none:'' }}" placeholder="Email Address" />
+                {% for error in form.email.errors %}
+                <p class="error-text text-sm text-red-500 mt-1">{{ error }}</p>
+                {% endfor %}
               </div>
 
-              <h2 class="form-title">Login</h2>
-              <form method="post" action="{% url 'login' %}" class="form-content">
-                {% csrf_token %}
+              <div class="input-group relative">
+                <label for="login-password" class="input-label">Password</label>
+                <input type="password" name="password" id="login-password"
+                  class="input-field pe-10 {% if form.password.errors %}border-red-500{% endif %}"
+                  placeholder="Password" />
 
-                <div class="input-group">
-                  <label for="login-email" class="input-label">Email</label>
-                  <input type="text" name="email" id="login-email"
-                    class="input-field {% if form.email.errors %}border-red-500{% endif %}"
-                    value="{{ form.email.value|default_if_none:'' }}" />
-                  {% for error in form.email.errors %}
-                  <p class="error-text text-sm text-red-500 mt-1">{{ error }}</p>
-                  {% endfor %}
-                </div>
+                <!-- Password Toggle Button -->
+                <button type="button" id="toggle-password"
+                  class="absolute right-2 top-10 text-gray-500 hover:text-neon-600"
+                  aria-label="Toggle password visibility">
 
-                <div class="input-group">
-                  <label for="login-password" class="input-label">Password</label>
-                  <input type="password" name="password" id="login-password"
-                    class="input-field {% if form.password.errors %}border-red-500{% endif %}" />
-                  {% for error in form.password.errors %}
-                  <p class="error-text text-sm text-red-500 mt-1">{{ error }}</p>
-                  {% endfor %}
-                  <div class="text-right mt-1">
-                    <a href="{% url 'password_flow' %}" class="text-sm text-neon-600 hover:underline">Forgot
-                      Password?</a>
-                  </div>
-                </div>
+                  <!-- Eye (visible when password is visible) -->
+                  <i class="fa-solid fa-eye text-gray-500 hidden" id="eye-open"></i> 
 
-                {% if form.non_field_errors %}
-                <div class="text-red-500 text-sm mt-1">
-                  {% for error in form.non_field_errors %}
-                  <p>{{ error }}</p>
-                  {% endfor %}
-                </div>
-                {% endif %}
-
-                <button id="login-button" type="submit" name="form_type" value="login"
-                  class="submit-button flex items-center justify-center gap-2">
-                  <span id="login-button-text">Login</span>
-                  <svg id="login-spinner" class="hidden animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                  </svg>
+                  <!-- Eye Off (visible when password is hidden) -->
+                   <i class="fa-solid fa-eye-slash text-gray-500" id="eye-closed"></i>
                 </button>
 
-                <p class="switch-form-text">
-                  Don't have an account?
-                  <a href="/register" id="show-signup" class="switch-form-link">Sign Up</a>
-                </p>
-              </form>
-            </div>
+                {% for error in form.password.errors %}
+                <p class="error-text text-sm text-red-500 mt-1">{{ error }}</p>
+                {% endfor %}
+
+                <div class="text-right mt-1">
+                  <a href="{% url 'password_flow' %}" class="text-sm text-neon-600 hover:underline">
+                    Forgot Password?
+                  </a>
+                </div>
+              </div>
+
+
+
+              {% if form.non_field_errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <button id="login-button" type="submit" name="form_type" value="login"
+                class="submit-button flex items-center justify-center gap-2">
+                <span id="login-button-text">Login</span>
+                <svg id="login-spinner" class="hidden animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+              </button>
+
+              <p class="switch-form-text">
+                Don't have an account?
+                <a href="/register" id="show-signup" class="switch-form-link">Sign Up</a>
+              </p>
+            </form>
           </div>
+        </div>
 
-          <!-- Signup -->
-          <div class="back">
-            <div class="form-body">
-              <a href="{% url 'google_login' %}" class="social-button">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
-                Continue with Google
-              </a>
+        <!-- Signup -->
+        <div class="back">
+          <div class="form-body">
+            <a href="{% url 'google_login' %}" class="social-button">
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5" />
+              Continue with Google
+            </a>
 
-              <div class="divider">
-                <div class="divider-line"></div>OR<div class="divider-line"></div>
+            <div class="divider">
+              <div class="divider-line"></div>OR<div class="divider-line"></div>
+            </div>
+
+            <h2 class="form-title">Create Account</h2>
+            <form method="post" action="{% url 'register' %}" class="form-content">
+              {% csrf_token %}
+
+              <div class="input-group">
+                <label for="signup-email" class="input-label">Email</label>
+                <input type="text" name="email" id="signup-email"
+                  class="input-field {% if form.email.errors %}border-red-500{% endif %}"
+                  value="{{ form.email.value|default_if_none:'' }}" placeholder="Email Address" />
+                {% for error in form.email.errors %}
+                <p class="error-text text-sm text-red-500 mt-1">{{ error }}</p>
+                {% endfor %}
               </div>
 
-              <h2 class="form-title">Create Account</h2>
-              <form method="post" action="{% url 'register' %}" class="form-content">
-                {% csrf_token %}
+              <div class="input-group relative">
+                <label for="login-password" class="input-label">Password</label>
+                <input type="password" name="password" id="login-password"
+                  class="input-field pe-10 {% if form.password.errors %}border-red-500{% endif %}"
+                  placeholder="Password" />
 
-                <div class="input-group">
-                  <label for="signup-email" class="input-label">Email</label>
-                  <input type="text" name="email" id="signup-email"
-                    class="input-field {% if form.email.errors %}border-red-500{% endif %}"
-                    value="{{ form.email.value|default_if_none:'' }}" />
-                  {% for error in form.email.errors %}
-                  <p class="error-text text-sm text-red-500 mt-1">{{ error }}</p>
-                  {% endfor %}
-                </div>
+                <!-- Password Toggle Button -->
+                <button type="button" id="toggle-password"
+                  class="absolute right-2 top-10 text-gray-500 hover:text-neon-600"
+                  aria-label="Toggle password visibility">
 
-                <div class="input-group">
-                  <label for="signup-password" class="input-label">Password</label>
-                  <input type="password" name="password" id="signup-password"
-                    class="input-field {% if form.password.errors %}border-red-500{% endif %}" />
-                  {% for error in form.password.errors %}
-                  <p class="error-text text-sm text-red-500 mt-1">{{ error }}</p>
-                  {% endfor %}
-                </div>
+                  <!-- Eye (visible when password is visible) -->
+                  <i class="fa-solid fa-eye text-gray-500 hidden" id="eye-open"></i> 
 
-                {% if form.non_field_errors %}
-                <div class="text-red-500 text-sm mt-1">
-                  {% for error in form.non_field_errors %}
-                  <p>{{ error }}</p>
-                  {% endfor %}
-                </div>
-                {% endif %}
-
-                <button id="signup-button" type="submit" name="form_type" value="register"
-                  class="submit-button flex items-center justify-center gap-2">
-                  <span id="signup-button-text">Sign Up</span>
-                  <svg id="signup-spinner" class="hidden animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                  </svg>
+                  <!-- Eye Off (visible when password is hidden) -->
+                   <i class="fa-solid fa-eye-slash text-gray-500" id="eye-closed"></i>
                 </button>
 
-                <p class="switch-form-text">
-                  Already have an account?
-                  <a href="/login" id="show-login" class="switch-form-link">Log In</a>
-                </p>
-              </form>
-            </div>
+                {% for error in form.password.errors %}
+                <p class="error-text text-sm text-red-500 mt-1">{{ error }}</p>
+                {% endfor %}
+
+                <div class="text-right mt-1">
+                  <a href="{% url 'password_flow' %}" class="text-sm text-neon-600 hover:underline">
+                    Forgot Password?
+                  </a>
+                </div>
+              </div>
+
+              {% if form.non_field_errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <button id="signup-button" type="submit" name="form_type" value="register"
+                class="submit-button flex items-center justify-center gap-2">
+                <span id="signup-button-text">Sign Up</span>
+                <svg id="signup-spinner" class="hidden animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+              </button>
+
+              <p class="switch-form-text">
+                Already have an account?
+                <a href="/login" id="show-login" class="switch-form-link">Log In</a>
+              </p>
+            </form>
           </div>
         </div>
       </div>
-
     </div>
+
   </div>
+</div>
 {% endblock %}
 {% block extra_scripts %}
-  <script src="{% static 'user/js/loginform.js' %}"></script>
+<script src="{% static 'user/js/loginform.js' %}"></script>
 {% endblock %}

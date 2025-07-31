@@ -71,8 +71,7 @@ def workout_log(request):
             workout_plan["id"] = workout_plan.pop("_id")
 
     except Exception as e:
-        workout_plan = None
-        messages.error(request, f"Failed to load workout plan: {e}")
+        pass
 
     return render(request, "workout_log.html", {"workout_plan": workout_plan})
 

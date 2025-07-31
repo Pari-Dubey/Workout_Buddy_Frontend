@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="{% static 'workout/css/create-workout.css' %}">
-<link rel="stylesheet" href="{% static 'workout/css/custom.css' %}">
 
 <script src="{% static 'workout/js/create-workout.js' %}" defer></script>
 {% endblock %}
@@ -16,7 +15,7 @@
 <div class="bg-black text-white flex items-center justify-center min-h-screen p-4">
   <div class="w-full max-w-3xl bg-gray-900 rounded-2xl shadow-2xl p-8 space-y-8">
     <div class="text-center">
-      <h1 class="text-3xl font-bold text-neon-400">
+      <h1 class="text-3xl font-bold text-neon-500">
         Create Your Fitness Plan
       </h1>
       <p class="text-gray-400 mt-2">
@@ -36,7 +35,7 @@
       </div>
     </div>
 
-    <form id="fitnessPlanForm" method="POST" action="{% url 'create_workout_plan' %}">
+    <form id="fitnessPlanForm" method="POST" action="{% url 'create_workout_plan' %}" class="hidden-until-loaded">
       {% csrf_token %}
       <div id="step-1" class="form-step active">
         <h2 class="text-2xl font-semibold mb-6 text-center">About You</h2>
@@ -103,17 +102,22 @@
                 class="border-2 border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-700"><strong>Sedentary</strong><span
                   class="block text-xs text-gray-400">Little to no exercise</span></label>
 
-              <input type="radio" id="lightly_active" name="activity_level" value="lightly_active" />
-              <label for="lightly_active"
+              <input type="radio" id="light" name="activity_level" value="light" />
+              <label for="light"
                 class="border-2 border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-700"><strong>Lightly
                   Active</strong><span class="block text-xs text-gray-400">Light exercise/sports 1-3
                   days/week</span></label>
 
-              <input type="radio" id="moderately_active" name="activity_level" value="moderately_active" />
-              <label for="moderately_active"
+              <input type="radio" id="moderate" name="activity_level" value="moderate" />
+              <label for="moderate"
                 class="border-2 border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-700"><strong>Moderately
                   Active</strong><span class="block text-xs text-gray-400">Moderate exercise 3-5
                   days/week</span></label>
+
+              <input type="radio" id="active" name="activity_level" value="active" />
+              <label for="active"
+                class="border-2 border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-700"><strong>
+                  Active</strong><span class="block text-xs text-gray-400">Hard exercise 6-7 days a week</span></label>
 
               <input type="radio" id="very_active" name="activity_level" value="very_active" />
               <label for="very_active"
@@ -137,15 +141,10 @@
                 class="border-2 border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-700"><strong>Gain
                   Muscle</strong><span class="block text-xs text-gray-400">Build mass and strength</span></label>
 
-              <input type="radio" id="improve_fitness" name="goal" value="improve_fitness" />
-              <label for="improve_fitness"
-                class="border-2 border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-700"><strong>Improve
+              <input type="radio" id="maintain_fitness" name="goal" value="maintain_fitness" />
+              <label for="maintain_fitness"
+                class="border-2 border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-700"><strong>Maintain
                   Fitness</strong><span class="block text-xs text-gray-400">General health and endurance</span></label>
-
-              <input type="radio" id="maintain_weight" name="goal" value="maintain_weight" />
-              <label for="maintain_weight"
-                class="border-2 border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-700"><strong>Maintain</strong><span
-                  class="block text-xs text-gray-400">Stay at your current fitness level</span></label>
             </div>
             {% if form.goal.errors %}
             <p class="text-red-400 text-sm mt-1">{{ form.goal.errors.0 }}</p>
@@ -164,9 +163,9 @@
             <label for="workout_days_per_week" class="block mb-3 text-sm font-medium text-gray-300">How many days a week
               can you work out?</label>
             <div class="flex items-center space-x-4">
-              <input type="range" id="workout_days_per_week" name="workout_days_per_week" min="1" max="7" value="3"
+              <input type="range" id="workout_days_per_week" name="workout_days_per_week" min="1" max="6" value="3"
                 class="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer" />
-              <span id="workout-days-output" class="text-neon-400 font-bold text-lg w-8 text-center">3</span>
+              <span id="workout-days-output" class="text-neon-500 font-bold text-lg w-8 text-center">3</span>
             </div>
             {% if form.workout_days_per_week.errors %}
             <p class="text-red-400 text-sm mt-1">{{ form.workout_days_per_week.errors.0 }}</p>
@@ -236,7 +235,7 @@
         <p class="text-gray-300 mb-6">
           Click submit to generate your personalized fitness plan.
         </p>
-        <svg class="w-24 h-24 text-neon-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        <svg class="w-24 h-24 text-neon-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
