@@ -11,8 +11,10 @@
 
       <!-- Navigation Links -->
       <nav class="hidden md:flex items-center space-x-8">
-        <a href="{% url 'workout_logger' %}" class="hover:text-neon-600 hover:underline font-medium">Workout Plan</a>
-        <a href="#" class="hover:text-neon-600 hover:underline font-medium">Diet Plan</a>
+
+        <a href="{% url 'workout_logger' %}" class="hover:text-neon-600 hover:underline font-medium">Workout Log</a>
+        <a href="{% url 'dietPlan:meal_log' %}" class="hover:text-neon-600 hover:underline font-medium">Meal Log</a>
+
         <a href="/#services" class="hover:text-neon-600 hover:underline font-medium">Services</a>
         <a href="/about" class="hover:text-neon-600 hover:underline font-medium">About</a>
       </nav>

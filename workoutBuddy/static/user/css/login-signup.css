@@ -354,7 +354,7 @@
 }
 
 /* === Media Queries (Unchanged) === */
-@media screen and (max-width:450px) {
+/* @media screen and (max-width:450px) {
    {
     align-items: flex-start;
     padding-top: 1rem;
@@ -396,7 +396,7 @@
     width: 5rem;
     height: 5rem;
   }
-}
+} */
 
 
 /* === Add this to your styles.css file === */

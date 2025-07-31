@@ -1,27 +1,4 @@
-/* === Neon Green Color Scale as CSS Variables === */
-:root {
-  --neon-green-50:  #f2ffe8;
-  --neon-green-100: #e6ffd1;
-  --neon-green-200: #c4ff9c;
-  --neon-green-300: #a0ff66;
-  --neon-green-400: #7cff30;
-  --neon-green-500: #2cff05;
-  --neon-green-600: #26e005;
-  --neon-green-700: #1fb904;
-  --neon-green-800: #189403;
-  --neon-green-900: #116f02;
-}
 
-/* === Neon Utility Classes === */
-.bg-neon-500  { background-color: var(--neon-green-500); }
-.text-neon-500  { color: var(--neon-green-500); }
-.border-neon-500  { border-color: var(--neon-green-500); }
-
-.hover\:bg-neon-500:hover { background-color: var(--neon-green-500); }
-.hover\:text-neon-500:hover { color: var(--neon-green-500); }
-.hover\:border-neon-500:hover { border-color: var(--neon-green-500); }
-
-/* === Flip Card Layout === */
 .card-container {
   perspective: 1500px;
 }
@@ -97,8 +74,7 @@ input[type="checkbox"] {
 }
 
 /* === Neon Buttons === */
-.button,
-button {
+.diet-button{
   padding: 10px 20px;
   font-size: 16px;
   font-weight: 600;
@@ -111,10 +87,8 @@ button {
   border-radius: 10px;
 }
 
-.button::after,
-.button::before,
-button::after,
-button::before {
+.diet-button::after,
+.diet-button::before{
   content: '';
   position: absolute;
   bottom: 0;
@@ -123,16 +97,14 @@ button::before {
   transition: all 0.4s;
 }
 
-.button::before,
-button::before {
+.diet-button::before {
   width: 100%;
   height: 100%;
   background: var(--neon-green-800);
   border-radius: 10px;
 }
 
-.button::after,
-button::after {
+.diet-button::after{
   width: 35px;
   height: 35px;
   background: #2cff0533;
@@ -141,24 +113,21 @@ button::after {
   transform: translate(10px, 10px);
 }
 
-.button:hover::before,
-button:hover::before {
+.diet-button:hover::before{
   transform: translate(5%, 20%);
   width: 110%;
   height: 110%;
   background: var(--neon-green-700);
 }
 
-.button:hover::after,
-button:hover::after {
+.diet-button:hover::after {
   border-radius: 10px;
   transform: translate(0, 0);
   width: 100%;
   height: 100%;
 }
 
-.button:active::after,
-button:active::after {
+.diet-button:active::after{
   transition: 0s;
   transform: translate(0, 5%);
 }
@@ -176,14 +145,4 @@ button:active::after {
   padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: 0 0 20px var(--neon-green-300);
-}
-
-/* === Misc === */
-.hidden {
-  display: none !important;
-}
-
-/* === Error Border === */
-.border-red-500 {
-  border-color: #f87171 !important;
 }
