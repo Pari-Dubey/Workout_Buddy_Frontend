@@ -6,7 +6,9 @@ from datetime import datetime
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
-FASTAPI_BASE_URL = 'http://localhost:8000'
+from django.conf import settings
+
+FASTAPI_BASE_URL = settings.FASTAPI_BASE_URL
 
 
 def register_view(request):
@@ -205,6 +207,8 @@ def view_profile(request):
     headers = {
         "Authorization": f"Bearer {token}"
     }
+    
+
 
     try:
         response = requests.get(f"{FASTAPI_BASE_URL}/api/user/profile", headers=headers)
