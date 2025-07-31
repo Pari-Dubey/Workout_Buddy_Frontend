@@ -2,7 +2,9 @@ import requests
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils import timezone
-from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
+FASTAPI_BASE_URL = settings.FASTAPI_BASE_URL
 
 def workout_log(request):
     token = request.session.get("token")
@@ -43,7 +45,7 @@ def workout_log(request):
         }
 
         try:
-            response = requests.post("http://127.0.0.1:8000/api/workout/complete/", json=payload, headers=headers)
+            response = requests.post(f'{FASTAPI_BASE_URL}/api/workout/complete/', json=payload, headers=headers)
             response_data = response.json()
 
             if response_data.get("status") == 201:
@@ -58,7 +60,7 @@ def workout_log(request):
         # instead of redirecting
 
     try:
-        response = requests.get("http://127.0.0.1:8000/api/workout/plans/user", headers=headers)
+        response = requests.get(f'{FASTAPI_BASE_URL}/api/workout/plans/user', headers=headers)
         response_data = response.json()
         workout_plan = response_data.get("data", [None])[0]
 
