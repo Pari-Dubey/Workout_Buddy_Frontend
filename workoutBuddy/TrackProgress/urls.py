@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import workout_log
+from . import views
 
 urlpatterns = [
-    path('workout/log/', workout_log, name='workout_logger'),
+    path('log/', views.workout_log, name='workout_logger'),
+    path("meal/progress/", views.diet_progress_view, name="diet_progress"),
+    path("workout/progress/", views.workout_progress_view, name="workout-progress"),
 ]
