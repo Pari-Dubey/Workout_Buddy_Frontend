@@ -52,3 +52,12 @@ body {
   opacity: 1;
   display: block;
 }
+
+.diet-form-create-bod{
+  background-color: var(--dark-bg);
+  color: var(--light-text);
+  /* Animated Gradient Background */
+  background: linear-gradient(-45deg, #000000, #081c04, #0d0d0d, #031400);
+  background-size: 400% 400%;
+  animation: an-aurora 15s ease infinite;
+}

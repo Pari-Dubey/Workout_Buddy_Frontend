@@ -9,7 +9,7 @@
   <style>
     body {
       background: #0f0f0f;
-      color: #00ff88;
+      color: #26e005;
       font-family: 'Segoe UI', sans-serif;
       padding: 2rem;
     }
@@ -62,9 +62,8 @@
       margin-bottom: 3rem;
     }
 
-    .chart-container canvas {
+    canvas {
       max-width: 100%;
-      max-height: 250px;
     }
 
     .tips {
@@ -118,29 +117,20 @@
     <h1>Workout Progress</h1>
     <div class="date-range">{{ start_date }} → {{ end_date }}</div>
 
-    <!-- Summary Stats -->
     <div class="summary-grid">
-      <div class="box">Consistency: {{ consistency|default:"0" }}%</div>
-      <div class="box">Average RPE: {{ average_rpe|default:"0" }}</div>
-      <div class="box">Total Sets: {{ total_sets|default:"0" }}</div>
-      <div class="box">Total Reps: {{ total_reps|default:"0" }}</div>
-      <div class="box">Calories Burned: {{ calories_burned|default:"0" }}</div>
-      <div class="box">Current Weight: {{ weight|default:"0" }} kg</div>
+      <div class="box">Consistency: {{ consistency }}%</div>
+      <div class="box">Average RPE: {{ average_rpe }}</div>
+      <div class="box">Total Sets: {{ total_sets }}</div>
+      <div class="box">Total Reps: {{ total_reps }}</div>
+      <div class="box"> Total Calories Burned: {{ calories_burned}} </div>
+      <div class="box">Current Weight: {{ weight }} kg</div>
     </div>
 
-    <!-- Bar Chart: Muscle Distribution -->
     <div class="chart-container">
       <h2 style="text-align:center;">Muscle Group Distribution</h2>
       <canvas id="muscleChart"></canvas>
     </div>
 
-    <!-- Line Chart: Calories Burned Over Time -->
-    <div class="chart-container">
-      <h2 style="text-align:center;">Calories Burned Over Time</h2>
-      <canvas id="calorieLineChart" height="200"></canvas>
-    </div>
-
-    <!-- Trainer Tips Section -->
     <div class="tips">
       <h2>Trainer's Tips</h2>
       {% for tip in tips %}
@@ -155,93 +145,62 @@
       {% endfor %}
     </div>
   </div>
+    {% endif %}
 
- <!-- JSON Data for Chart.js -->
-  {{ muscle_distribution|json_script:"muscle-data" }}
-  {{ workout_dates|json_script:"workout-dates" }}
-  {{ calorie_per_day|json_script:"calorie-values" }}
-
-  <!-- Chart.js Scripts -->
   <script>
-    const muscleData = JSON.parse(document.getElementById("muscle-data").textContent || '{}');
-    const calorieDates = JSON.parse(document.getElementById("workout-dates").textContent || '[]');
-    const calorieValues = JSON.parse(document.getElementById("calorie-values").textContent || '[]');
+  const muscleLabels = {{ muscle_labels|safe }};
+  const muscleValues = {{ muscle_values|safe }};
 
-    console.log(muscleData)
-    console.log(calorieDates)
-    console.log(calorieValues)
-    // Muscle Group Chart
-    const ctx = document.getElementById('muscleChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: Object.keys(muscleData),
-        datasets: [{
-          label: 'Workout % Focused',
-          data: Object.values(muscleData),
-          backgroundColor: '#00ff88',
-          borderColor: '#00ff88',
-          borderWidth: 1,
-        }]
+  const ctx = document.getElementById('muscleChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: muscleLabels,
+      datasets: [{
+        label: 'Workout % Focused',
+        data: muscleValues,
+        backgroundColor: '#26e005',
+        borderColor: '#00ff88',
+        borderWidth: 1,
+      }]
+    },
+    options: {
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        color: '#00ff88'
       },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: { color: '#00ff88' },
-            grid: { color: '#222' }
-          },
-          x: {
-            ticks: { color: '#00ff88' },
-            grid: { color: '#222' }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: { color: '#00ff88' }
-          }
+      title: {
+        display: true,
+        text: 'Number of sets',
+        color: '#26e005',
+        font: {
+          size: 14
         }
       }
-    });
-
-    // Calories Over Time Line Chart
-    const calorieCtx = document.getElementById('calorieLineChart').getContext('2d');
-    new Chart(calorieCtx, {
-      type: 'line',
-      data: {
-        labels: calorieDates,
-        datasets: [{
-          label: 'Calories Burned',
-          data: calorieValues,
-          fill: false,
-          borderColor: '#00ff88',
-          backgroundColor: 'rgba(0, 255, 136, 0.2)',
-          tension: 0.3,
-          pointRadius: 4,
-          pointHoverRadius: 6
-        }]
+    },
+    x: {
+      ticks: {
+        color: '#00ff88'
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            labels: { color: '#00ff88' }
-          }
-        },
-        scales: {
-          x: {
-            ticks: { color: '#00ff88' },
-            grid: { color: '#222' }
-          },
-          y: {
-            beginAtZero: true,
-            ticks: { color: '#00ff88' },
-            grid: { color: '#222' }
-          }
+      title: {
+        display: true,
+        text: 'Muscle Groups',
+        color: '#26e005',
+        font: {
+          size: 14
         }
       }
-    });
-  </script>
-  {% endif %}
-</body>
-</html>
+    }
+  },
+  plugins: {
+    legend: {
+      labels: {
+        color: '#00ff88'
+      }
+    }
+  }
+}
+  });
+</script>

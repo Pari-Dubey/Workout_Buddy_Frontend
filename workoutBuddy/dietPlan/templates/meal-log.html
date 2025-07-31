@@ -5,16 +5,15 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'dietPlan/css/meal-log.css' %}">
-<link rel="stylesheet" href="{% static 'dietPlan/css/custom.css' %}">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'dietPlan/css/diet.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="main-content-wrapper">
-    <div class="container">
+    <div class="meal-log-container diet-form">
        <h1>Your Daily Meal Log </h1> 
 
-        <form id="mealLogForm" method="post" action="{% url 'dietPlan:submit_meal_log' %}">
+        <form id="mealLogForm" method="post" action="{% url 'dietPlan:meal_log' %}">
             {% csrf_token %}
 
             <div class="form-group">
@@ -24,7 +23,7 @@
                     id="date" 
                     name="date" 
                     required 
-                    style="background-color: #1f2937; color: white; border: 1px solid var(--neon-green-500); padding: 10px; border-radius: 6px;"
+                    style="background-color: #1f2937; color: white; border: 1px solid var(--neon-green-600); padding: 10px; border-radius: 6px;"
                 >
             </div>
 
@@ -45,7 +44,7 @@
 
             <div class="button-group">
                 <button type="submit" class="button">submit</button>
-                
+                <a href="{% url 'diet_progress' %}" class="button">View Progress</a>
             </div>
         </form>
     </div>
