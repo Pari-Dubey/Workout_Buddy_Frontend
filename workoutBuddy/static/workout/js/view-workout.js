@@ -3,8 +3,7 @@ const workoutData = JSON.parse(
 );
 console.log("Workout Data:", workoutData);
 
-const planId = "{{ plan_id }}";
-console.log("Plan ID:", planId);
+
 
 const container = document.getElementById("workout-plan-container");
 

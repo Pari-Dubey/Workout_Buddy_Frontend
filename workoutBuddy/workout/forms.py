@@ -58,8 +58,7 @@ class CreateWorkoutForm(forms.Form):
         choices=[
             ("lose_weight", "Lose Weight"),
             ("gain_muscle", "Gain Muscle"),
-            ("improve_fitness", "Improve Fitness"),
-            ("maintain_weight", "Maintain Fitness")
+            ("maintain_fitness", "Maintain Fitness")
         ],
         error_messages={
             'required': 'Please choose your goal.',
@@ -70,8 +69,9 @@ class CreateWorkoutForm(forms.Form):
     activity_level = forms.ChoiceField(
         choices=[
             ("sedentary", "Sedentary"),
-            ("lightly_active", "Lightly Active"),
-            ("moderately_active", "Moderately Active"),
+            ("light", "Light"),
+            ("moderate", "Moderate"),
+            ("active", "Active"),
             ("very_active", "Very Active")
         ],
         error_messages={

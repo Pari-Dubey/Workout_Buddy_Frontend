@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const nextBtn = document.getElementById("nextBtn");
   const prevBtn = document.getElementById("prevBtn");
   const submitBtn = document.getElementById("submitBtn");
-  const form = document.getElementById("fitnessPlanForm"); // Changed to fitnessPlanForm
+  const form = document.getElementById("fitnessPlanForm");
   const progressBar = document.getElementById("progress-bar");
   const progressText = document.getElementById("progress-text");
   const workoutDaysSlider = document.getElementById("workout_days_per_week");
@@ -12,10 +12,38 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentStep = 0;
   const totalSteps = steps.length;
 
-  if (workoutDaysSlider) {
-    workoutDaysSlider.addEventListener("input", () => {
-      workoutDaysOutput.textContent = workoutDaysSlider.value;
-    });
+  async function prefillFormFromProfile() {
+    try {
+      const response = await fetch("/workout/api/profile-json/", {
+        method: "GET",
+        credentials: "same-origin",
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch profile data");
+
+      const data = await response.json();
+      console.log(data);
+
+      document.getElementById("age").value = data.age || "";
+      document.getElementById("height_cm").value = data.height || "";
+      document.getElementById("weight_kg").value = data.weight || "";
+
+      // Corrected radio ID matching
+      const genderInput = document.getElementById(
+        data.gender?.toLowerCase() || ""
+      );
+      if (genderInput) genderInput.checked = true;
+
+      const goalInput = document.getElementById(data.goal?.toLowerCase() || "");
+      if (goalInput) goalInput.checked = true;
+
+      const activityInput = document.getElementById(
+        data.activity_level?.toLowerCase() || ""
+      );
+      if (activityInput) activityInput.checked = true;
+    } catch (err) {
+      console.error("Error pre-filling form:", err);
+    }
   }
 
   function updateFormSteps() {
@@ -29,43 +57,30 @@ document.addEventListener("DOMContentLoaded", function () {
     progressText.textContent = `Step ${currentStep + 1} of ${totalSteps}`;
 
     prevBtn.classList.toggle("invisible", currentStep === 0);
-    // Ensure nextBtn is visible unless on the very last step
     nextBtn.classList.toggle("hidden", currentStep === totalSteps - 1);
-    // submitBtn is only visible on the very last step
     submitBtn.classList.toggle("hidden", currentStep !== totalSteps - 1);
   }
 
   function validateStep(stepIndex) {
     const currentStepElement = steps[stepIndex];
-    // Select required inputs and textareas
+    let isValid = true;
+
+    // Validate required text/textarea fields
     const inputs = currentStepElement.querySelectorAll(
       "input[required], textarea[required]"
     );
-    let isValid = true;
-
     inputs.forEach((input) => {
-      // Check for emptiness, but also for specific radio button group selection if applicable
-      if (input.type === "radio") {
-        const radioGroupName = input.name;
-        const isRadioGroupSelected = currentStepElement.querySelector(
-          `input[name="${radioGroupName}"]:checked`
-        );
-        if (!isRadioGroupSelected) {
-          // Highlight the parent container or add a message for radio groups
-          // For simplicity, we'll just set isValid to false
+      if (input.type !== "radio") {
+        if (!input.value.trim()) {
+          input.classList.add("border-red-500");
           isValid = false;
+        } else {
+          input.classList.remove("border-red-500");
         }
-      } else if (!input.value.trim()) {
-        input.classList.add("border-red-500");
-        isValid = false;
-      } else {
-        input.classList.remove("border-red-500");
       }
     });
 
-    // Add specific validation for radio buttons if needed (e.g., for gender, activity_level, goal, workout_duration)
-    // Since radio buttons often have a 'checked' attribute on initial load, ensure a selection is made
-    // For radio groups, check if any option is selected.
+    // Validate radio groups in current step
     const radioGroups = [
       "gender",
       "activity_level",
@@ -73,50 +88,90 @@ document.addEventListener("DOMContentLoaded", function () {
       "workout_duration",
     ];
     radioGroups.forEach((groupName) => {
-      const selectedRadio = currentStepElement.querySelector(
-        `input[name="${groupName}"]:checked`
+      const radios = currentStepElement.querySelectorAll(
+        `input[name="${groupName}"]`
       );
-      if (
-        !selectedRadio &&
-        currentStepElement.querySelector(`input[name="${groupName}"]`)
-      ) {
-        isValid = false;
-        // You might want to add a visual indicator here
+      if (radios.length > 0) {
+        const isChecked = Array.from(radios).some((radio) => radio.checked);
+        if (!isChecked) {
+          isValid = false;
+          radios.forEach((radio) => {
+            const label = currentStepElement.querySelector(
+              `label[for="${radio.id}"]`
+            );
+            if (label) label.classList.add("border-red-500");
+          });
+        } else {
+          radios.forEach((radio) => {
+            const label = currentStepElement.querySelector(
+              `label[for="${radio.id}"]`
+            );
+            if (label) label.classList.remove("border-red-500");
+          });
+        }
       }
     });
 
     return isValid;
   }
 
-  nextBtn.addEventListener("click", () => {
-    if (validateStep(currentStep)) {
-      if (currentStep < totalSteps - 1) {
-        currentStep++;
+  async function init() {
+    await prefillFormFromProfile(); // Wait for data to prefill
+    updateFormSteps(); // Render first step
+
+    // Show the form
+    document
+      .getElementById("fitnessPlanForm")
+      ?.classList.remove("hidden-until-loaded");
+
+    // Next button logic
+    nextBtn.addEventListener("click", () => {
+      if (validateStep(currentStep)) {
+        if (currentStep < totalSteps - 1) {
+          currentStep++;
+          updateFormSteps();
+        }
+      } else {
+        alert("Please fill in all required fields before proceeding.");
+      }
+    });
+
+    // Previous button logic
+    prevBtn.addEventListener("click", () => {
+      if (currentStep > 0) {
+        currentStep--;
         updateFormSteps();
       }
-    } else {
-      alert("Please fill in all required fields before proceeding."); // Simple alert for missing fields
-    }
-  });
+    });
 
-  prevBtn.addEventListener("click", () => {
-    if (currentStep > 0) {
-      currentStep--;
-      updateFormSteps();
-    }
-  });
+    // Final form submission
+    form.addEventListener("submit", function (event) {
+      if (!validateStep(currentStep)) {
+        event.preventDefault();
+        return;
+      }
 
-form.addEventListener("submit", function (event) {
-  if (!validateStep(currentStep)) {
-    event.preventDefault(); // Prevent actual form submission if validation fails
-    return; // Stop further execution
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Generating...";
+    });
+
+    // Real-time workout days slider preview
+    if (workoutDaysSlider) {
+      workoutDaysSlider.addEventListener("input", () => {
+        workoutDaysOutput.textContent = workoutDaysSlider.value;
+      });
+
+      workoutDaysOutput.textContent = workoutDaysSlider.value;
+    }
+
+    // Remove error border on radio change
+    document.querySelectorAll("input[type='radio']").forEach((radio) => {
+      radio.addEventListener("change", () => {
+        const label = document.querySelector(`label[for="${radio.id}"]`);
+        if (label) label.classList.remove("border-red-500");
+      });
+    });
   }
 
-  // ✅ Only reached if validation passes
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Generating...";
-});
-
-
-  updateFormSteps(); // Initial setup
+  init();
 });

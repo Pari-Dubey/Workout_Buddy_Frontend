@@ -155,3 +155,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('login-password');
+    const eyeOpen = document.getElementById('eye-open');
+    const eyeClosed = document.getElementById('eye-closed');
+
+    if (toggleBtn && passwordInput && eyeOpen && eyeClosed) {
+      toggleBtn.addEventListener('click', function () {
+        const isPasswordVisible = passwordInput.type === 'text';
+        passwordInput.type = isPasswordVisible ? 'password' : 'text';
+
+        eyeOpen.classList.toggle('hidden', isPasswordVisible);   // Show when visible
+        eyeClosed.classList.toggle('hidden', !isPasswordVisible); // Hide when visible
+      });
+    }
+  });

@@ -10,6 +10,9 @@ FASTAPI_BASE_URL = 'http://localhost:8000'
 
 
 def register_view(request):
+    token = request.session.get("token")
+    if token:
+        return redirect("/")
     form = RegisterForm(request.POST or None)
 
     if request.method == 'POST':
@@ -91,6 +94,10 @@ def resend_otp(request):
 
 
 def login_view(request):
+    token = request.session.get("token")
+    if token:
+        return redirect("/")
+    
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -109,7 +116,7 @@ def login_view(request):
                 
                     token = user_data.get("access_token")
                     request.session['token'] = token
-                    return redirect('profile')
+                    return redirect('/')
                 else:
                     form.add_error(None, "Invalid email or password.")
             except requests.exceptions.RequestException as e:
@@ -175,7 +182,7 @@ def logout_view(request):
     return redirect('login')
 
 def google_login_redirect(request):
-    return redirect(f'{FASTAPI_BASE_URL}/auth/google/login')
+    return redirect(f'{FASTAPI_BASE_URL}/api/google/login')
 
 
 def google_login_callback(request):

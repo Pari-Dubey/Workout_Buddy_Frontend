@@ -67,6 +67,6 @@ def workout_log(request):
 
         context["workout_plan"] = workout_plan
     except Exception as e:
-        context["error_message"] = f"Failed to load workout plan: {e}"
+        pass
 
     return render(request, "workout_log.html", context)
