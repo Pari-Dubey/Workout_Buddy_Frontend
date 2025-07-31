@@ -9,8 +9,6 @@ import json
 FASTAPI_BASE_URL = settings.FASTAPI_BASE_URL
 
 
-FASTAPI_BASE_URL = "http://localhost:8000" 
-
 @csrf_exempt
 def workout_log(request):
     token = request.session.get("token")
@@ -66,7 +64,7 @@ def workout_log(request):
         # instead of redirecting
 
     try:
-        response = requests.get("http://127.0.0.1:8000/api/workout/plans/user", headers=headers)
+        response = requests.get(f'{FASTAPI_BASE_URL}/api/workout/plans/user', headers=headers)
         response_data = response.json()
         workout_plan = response_data.get("data", [None])[0]
 
