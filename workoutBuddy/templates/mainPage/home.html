@@ -23,10 +23,18 @@
       <p class="text-md tracking-widest text-neon-300 uppercase mb-4">A fresh approach to healthy life</p>
       <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Unlock your potential with good nutrition</h1>
       <div class="flex justify-center space-x-4">
+        {% if token %}
+        <a href="/#services"
+           class="bg-neon-600 hover:bg-neon-700 text-black font-semibold py-2 px-5 rounded transition-all duration-300 transform hover:scale-105">
+          Get Started
+        </a>
+        {% else %}
         <a href="{% url 'register' %}"
            class="bg-neon-600 hover:bg-neon-700 text-black font-semibold py-2 px-5 rounded transition-all duration-300 transform hover:scale-105">
           Get Started
         </a>
+        {% endif %}
+
       </div>
     </div>
   </div>

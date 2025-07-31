@@ -15,11 +15,10 @@
 {% endif %}
 
 
-<div
-  class="wokoutlog-form-body w-full flex items-center justify-center bg-[var(--dark-bg)] text-[var(--light-text)]">
+<div class="w-full flex items-center justify-center bg-[var(--dark-bg)] text-[var(--light-text)]">
   <div
     class="form-body max-w-4xl w-full border border-[var(--border-color)] p-6 rounded-md shadow-md bg-[var(--dark-card)] neon-glow">
-    <h2 class="form-title text-2xl font-bold mb-6 text-center text-[var(--neon-green-500)]">Workout Log</h2>
+    <h2 class="form-title text-2xl font-bold mb-6 text-center text-[var(--neon-green-600)]">Workout Log</h2>
 
     {% if workout_plan %}
     <script id="plan-data" type="application/json">
@@ -55,7 +54,11 @@
     </form>
 
     {% else %}
-    <p class="text-center text-[var(--mid-text)]">No workout plan available.</p>
+    <div class="flex flex-col items-center justify-center text-center space-y-4">
+      <p class="text-[var(--mid-text)]">No workout plan available.</p>
+      <a href="{% url 'create_workout_plan' %}" class="button">Generate Workout Plan</a>
+    </div>
+
     {% endif %}
   </div>
 </div>

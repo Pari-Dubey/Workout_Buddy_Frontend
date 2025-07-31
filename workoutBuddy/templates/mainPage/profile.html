@@ -1,14 +1,14 @@
-<!-- Profile Dropdown Component Container -->
+{% load static %}
 <div id="profile-dropdown-container" class="relative inline-block text-left z-50">
 
   <!-- Trigger Button -->
   <div>
     <button type="button" id="profile-dropdown-button"
       class="flex items-center justify-center w-12 h-12 rounded-full border-2 border-transparent transition-all duration-300 hover:border-neon-500 focus:outline-none focus:ring-2 focus:ring-neon-500 bg-gray-200 hover:bg-gray-300">
-      <img class="h-12 w-12 rounded-full object-cover"
-        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop"
+        <img class="h-12 w-12 rounded-full object-cover" src="{% static 'images/profile.png' %}"
         alt="User avatar"
         onerror="this.onerror=null;this.src='https://placehold.co/48x48/E2E8F0/4A5568?text=User';">
+
     </button>
   </div>
 
