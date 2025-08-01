@@ -4,8 +4,9 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt  # only for development
 from .forms import CreateWorkoutForm
 from django.http import JsonResponse
+from django.conf import settings
 
-FASTAPI_BASE_URL = 'http://localhost:8000'
+FASTAPI_BASE_URL = settings.FASTAPI_BASE_URL
 
 # views.py
 
