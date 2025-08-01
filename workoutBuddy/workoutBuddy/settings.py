@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'user',
     'dietPlan',
     'workout',
-    'trackProgress',
+    'TrackProgress',
 ]
 
 MIDDLEWARE = [
@@ -88,7 +88,8 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [BASE_DIR / "static"]  # or appropriate path
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
