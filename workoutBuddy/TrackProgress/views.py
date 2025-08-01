@@ -76,6 +76,7 @@ def workout_log(request):
         pass
 
     return render(request, "workout_log.html", context)
+
 def diet_progress_view(request):
     token = request.session.get("token")
     # user_id = request.session.get("user_id")
