@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'user',
     'dietPlan',
     'workout',
-    'trackProgress',
+    'TrackProgress',
 ]
 
 MIDDLEWARE = [
