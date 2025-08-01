@@ -3,10 +3,12 @@
 <html lang="en">
 
 <head>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Workout Buddy{% endblock %}</title>
 
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -35,6 +37,7 @@
   <!-- Main Content -->
   <main>
     {% block content %}{% endblock %}
+    {% include 'mainPage/chatbot.html' %}
   </main>
 
   <!-- Footer -->
