@@ -26,5 +26,5 @@ urlpatterns = [
    path('', include('user.urls')),
    path('diet/', include(('dietPlan.urls', 'dietPlan'), namespace='dietPlan')),
    path('workout/', include('workout.urls')),
-   path('', include('trackProgress.urls')),
+   path('', include('TrackProgress.urls')),
 ]
