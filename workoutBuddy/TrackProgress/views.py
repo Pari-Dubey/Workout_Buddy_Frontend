@@ -208,8 +208,7 @@ def diet_progress_date_range_view(request):
                 timeout=10
             )
             res_json = response.json()
-            # print("API Response:", res_json)
-            # print("Status Code:", response.status_code)
+          
 
             if response.status_code != 200 or "data" not in res_json or "summary" not in res_json["data"]:
                 messages.error(request, "Can't generate the data on these dates.")

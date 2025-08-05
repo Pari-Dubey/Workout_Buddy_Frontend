@@ -139,7 +139,7 @@ def check_diet_plan_view(request):
 
         if response.status_code == 200:
             data = response.json()
-            print(data)
+        
             exists = bool(data.get("ai_generated_plan"))
             return JsonResponse({"exists": exists})
         else:
