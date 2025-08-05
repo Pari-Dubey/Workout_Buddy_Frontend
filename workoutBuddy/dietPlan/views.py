@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 import requests
 from django.http import JsonResponse
-
 from django.conf import settings
 
 FASTAPI_BASE_URL = settings.FASTAPI_BASE_URL
