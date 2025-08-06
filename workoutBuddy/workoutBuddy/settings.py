@@ -26,6 +26,11 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ["workout-buddy-frontend-s2df.onrender.com"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://workout-buddy-frontend-s2df.onrender.com",
+]
+
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
