@@ -106,4 +106,4 @@ STATICFILES_DIRS = [BASE_DIR / "static"]  # or appropriate path
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ✅ FastAPI Backend URL from .env or fallback default
-FASTAPI_BASE_URL = os.getenv("FASTAPI_BASE_URL", "https://workout-buddy-fjrx.onrender.com")
+FASTAPI_BASE_URL = os.getenv("FASTAPI_BASE_URL", "https://workout-buddy-adzh.onrender.com")
