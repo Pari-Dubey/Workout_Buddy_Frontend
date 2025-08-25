@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
       placeholder: "https://placehold.co/200x200/c7d2fe/3730a3?text=Alex",
     },
     {
-      name: "Aaarush Chauhan",
+      name: "Aarush Chauhan",
       role: "Backend Developer",
       bio: "Builds and maintains the server-side logic, ensuring stability, scalability, and performance.",
       img: imagePaths.dataset.aarushImg,
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
     {
       name: "Yatharth Chaudhary",
-      role: "Backend Developer (Team Lead)",
+      role: "Backend Developer",
       bio: "Builds the robust architecture and APIs that power seamless functionality behind every interaction.",
       img: imagePaths.dataset.yatharthImg,
       placeholder: "https://placehold.co/200x200/ddd6fe/4338ca?text=Sam",
